@@ -45,7 +45,8 @@ public final class StreamTestDriver {
         final String password = System.getProperty("gnip.password");
         final String account = System.getProperty("gnip.account");
         final String streamName = System.getProperty("gnip.stream");
-        
+        final String streamType = System.getProperty("gnip.streamType");
+
         if(username == null) {
             throw new IllegalArgumentException("Missing gnip.username");
         }
@@ -75,7 +76,7 @@ public final class StreamTestDriver {
                     System.out.println(i + "-" + activity.getBody() + " " + activity.getGnip().getMatchingRules());
                 }
             };
-            final GnipStream stream = gnip.createStream(account, streamName, n);
+            final GnipStream stream = gnip.createStream(account, streamName, streamType, n);
             System.out.println("-- Awaiting for stream to terminate");
             stream.await();
             System.out.println("-- Shutting down");

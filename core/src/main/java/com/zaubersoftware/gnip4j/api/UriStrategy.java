@@ -25,6 +25,8 @@ import java.net.URI;
  */
 public interface UriStrategy {
 
+  public static final String DEFAULT_STREAM_TYPE = "track";
+  public static final String DEFAULT_USERTRACK_STREAM_TYPE = "usertrack";
     /**
      * Generates a {@link URI} to connect against a Gnip endpoint to consume the activity stream.
      *
@@ -32,8 +34,17 @@ public interface UriStrategy {
      * @param dataCollectorId
      * @return
      */
-    URI createStreamUri(String account, String streamName);
+    URI createStreamUri(String streamType, String account, String streamName);
 
+    /**
+     * Generates a {@link URI} to connect against a Gnip endpoint to consume the replay stream.
+     *
+     * @param domain
+     * @param dataCollectorId
+     * @return
+     */
+    URI createReplayUri(String streamType, String account, String streamName);
+    
     /**
      * Generates a {@link URI} to connect against a Gnip endpoint to get/modify rules.
      *
@@ -41,5 +52,5 @@ public interface UriStrategy {
      * @param dataCollectorId
      * @return
      */
-    URI createRulesUri(String account, String streamName);
+    URI createRulesUri(String streamType, String account, String streamName);
 }

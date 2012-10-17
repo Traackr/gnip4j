@@ -32,6 +32,7 @@ public class GnipRulesTestDriver {
 	private GnipFacade gnip;
 	private String account;
 	private String streamName;
+	private String streamType;
 	
 	@Before
 	public void setUp() {
@@ -39,6 +40,7 @@ public class GnipRulesTestDriver {
         final String password = System.getProperty("gnip.password");
         account = System.getProperty("gnip.account");
         streamName = System.getProperty("gnip.stream");
+        streamType = System.getProperty("gnip.streamType");
         
         if(username == null) {
             throw new IllegalArgumentException("Missing gnip.username");
@@ -58,7 +60,7 @@ public class GnipRulesTestDriver {
 	
 	@Test
 	public final void testGetRules() {
-        final Rules rules = gnip.getRules(account, streamName);
+        final Rules rules = gnip.getRules(account, streamName, streamType);
         
         for (final Rule rule : rules.getRules()) {
         	System.out.println("Found rule " + rule.getValue() + " with tag: " + rule.getTag());
@@ -70,9 +72,9 @@ public class GnipRulesTestDriver {
 		final Rule rule = new Rule();
 		rule.setValue("#neverevergonnahappen88");
 		
-		gnip.addRule(account, streamName, rule);
+		gnip.addRule(account, streamName, streamType, rule);
 		
-		final Rules rules = gnip.getRules(account, streamName);
+		final Rules rules = gnip.getRules(account, streamName, streamType);
 		boolean ruleAdded = false;
 		for (final Rule existingRule : rules.getRules()) {
 			if (existingRule.getValue().equals("#neverevergonnahappen88")) {

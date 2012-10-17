@@ -48,9 +48,10 @@ public class GnipMessageReceiver extends AbstractMessageReceiver {
         String uri = getEndpointURI().getPath();
         
         String account = uri.substring(uri.indexOf("accounts/") + "accounts/".length(), uri.indexOf("/publishers"));
-        String streamName = uri.substring(uri.indexOf("streams/track/") + "streams/track/".length(), uri.indexOf(".json"));
+        String streamType = uri.substring(uri.indexOf("streams/") + "streams/".length(), uri.indexOf("/"));
+        String streamName = uri.substring(uri.indexOf("streams/"+streamType+"/") + "streams/".concat(streamType).concat("/").length(), uri.indexOf(".json"));
         
-        stream = getGnipFacade().createStream(account, streamName, new StreamNotificationAdapter() {
+        stream = getGnipFacade().createStream(account, streamName, streamType, new StreamNotificationAdapter() {
             @Override
             public void notify(final Activity activity, final GnipStream stream) {
                 try {

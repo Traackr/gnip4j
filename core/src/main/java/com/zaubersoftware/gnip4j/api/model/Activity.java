@@ -15,6 +15,8 @@
  */
 package com.zaubersoftware.gnip4j.api.model;
 
+import java.math.BigInteger;
+
 import javax.xml.datatype.XMLGregorianCalendar;
 
 import org.codehaus.jackson.annotate.JsonAutoDetect;
@@ -38,6 +40,7 @@ public class Activity {
     private String objectType;
     private String id;
     private String link;
+    private BigInteger retweetCount;
 
     public final InReplyTo getInReplyTo() {
         return inReplyTo;
@@ -234,6 +237,15 @@ public class Activity {
         public final void setLink(final String value) {
             link = value;
         }
+    }
+
+
+    public BigInteger getRetweetCount() {
+      return retweetCount;
+    }
+
+    public void setRetweetCount(BigInteger retweetCount) {
+      this.retweetCount = retweetCount;
     }
 
 }

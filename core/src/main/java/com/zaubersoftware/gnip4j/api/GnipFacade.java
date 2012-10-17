@@ -29,8 +29,8 @@ import com.zaubersoftware.gnip4j.api.model.Rules;
  */
 public interface GnipFacade {
 
-    /** @see #createStream(String, long, StreamNotification, ExecutorService) */
-    GnipStream createStream(String account, String streamName,
+    /** @see #createStream(String, String, String, StreamNotification, ExecutorService) */
+    GnipStream createStream(String account, String streamName, String streamType,
             StreamNotification observer);
     
     /**
@@ -44,7 +44,7 @@ public interface GnipFacade {
      * @param executorService {@link ExecutorService} used to process {@link Activity}
      * @return a reference to the stream so it can be closed 
      */
-    GnipStream createStream(String account, String streamName,
+    GnipStream createStream(String account, String streamName, String streamType,
                             StreamNotification observer, 
                             ExecutorService executorService);
     
@@ -57,7 +57,7 @@ public interface GnipFacade {
      * @param streamName the streamName
      * @return The Rules object for all the rules configured on this tracker.
      */
-    Rules getRules(String account, String streamName);
+    Rules getRules(String account, String streamName, String streamType);
     
     /**
      * Gnip provides a REST interface to the rules configured for each data collector.
@@ -72,7 +72,7 @@ public interface GnipFacade {
      * @param streamName the streamName
      * @param rule The Rule object to add to the tracker.
      */
-    void addRule(String account, String streamName, Rule rule);
+    void addRule(String account, String streamName, String streamType, Rule rule);
     
-    void deleteRule(String account, String streamName, Rule rule);
+    void deleteRule(String account, String streamName, String streamType, Rule rule);
 }

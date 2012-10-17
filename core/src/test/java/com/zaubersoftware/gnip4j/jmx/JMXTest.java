@@ -25,6 +25,7 @@ import com.zaubersoftware.gnip4j.api.GnipFacade;
 import com.zaubersoftware.gnip4j.api.GnipStream;
 import com.zaubersoftware.gnip4j.api.RemoteResourceProvider;
 import com.zaubersoftware.gnip4j.api.StreamNotificationAdapter;
+import com.zaubersoftware.gnip4j.api.UriStrategy;
 import com.zaubersoftware.gnip4j.api.exception.AuthenticationGnipException;
 import com.zaubersoftware.gnip4j.api.exception.TransportGnipException;
 import com.zaubersoftware.gnip4j.api.impl.DefaultGnipFacade;
@@ -70,9 +71,9 @@ public final class JMXTest {
 			}
         };
         final GnipFacade f = new DefaultGnipFacade(resources);
-        final GnipStream stream = f.createStream("acme", "stream", observer);
+        final GnipStream stream = f.createStream("acme", "stream", UriStrategy.DEFAULT_STREAM_TYPE, observer);
         stream.close();
-        f.createStream("acme", "stream", observer);
+        f.createStream("acme", "stream", UriStrategy.DEFAULT_STREAM_TYPE, observer);
         stream.close();
         
     }

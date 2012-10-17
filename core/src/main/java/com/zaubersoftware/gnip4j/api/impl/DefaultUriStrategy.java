@@ -35,12 +35,12 @@ import com.zaubersoftware.gnip4j.api.UriStrategy;
  * @since 11/11/2011
  */
 public final class DefaultUriStrategy implements UriStrategy {
-    public static final String BASE_GNIP_STREAM_URI = "https://stream.gnip.com:443/accounts/%s/publishers/twitter/streams/track/%s.json";
-    public static final String BASE_GNIP_RULES_URI = "https://api.gnip.com:443/accounts/%s/publishers/twitter/streams/track/%s/rules.json";
-    
+    public static final String BASE_GNIP_STREAM_URI = "https://stream.gnip.com:443/accounts/%s/publishers/twitter/streams/%s/%s.json";
+    public static final String BASE_GNIP_REPLAY_URI = "https://stream.gnip.com:443/accounts/%s/publishers/twitter/replay/%s/%s.json";
+    public static final String BASE_GNIP_RULES_URI = "https://api.gnip.com:443/accounts/%s/publishers/twitter/streams/%s/%s/rules.json";
 
     @Override
-    public URI createStreamUri(final String account, String streamName) {
+    public URI createStreamUri(String streamType, final String account, String streamName) {
         if (account == null || account.trim().isEmpty()) {
             throw new IllegalArgumentException("The account cannot be null or empty");
         }
@@ -49,11 +49,24 @@ public final class DefaultUriStrategy implements UriStrategy {
         }
         
         
-        return URI.create(String.format(BASE_GNIP_STREAM_URI, account.trim(), streamName.trim()));
+        return URI.create(String.format(BASE_GNIP_STREAM_URI, account.trim(), streamType.trim(), streamName.trim()));
+    }
+    
+    @Override
+    public URI createReplayUri(String streamType, final String account, String streamName) {
+        if (account == null || account.trim().isEmpty()) {
+            throw new IllegalArgumentException("The account cannot be null or empty");
+        }
+        if (streamName == null || streamName.trim().isEmpty()) {
+            throw new IllegalArgumentException("The streamName cannot be null or empty");
+        }
+        
+        
+        return URI.create(String.format(BASE_GNIP_REPLAY_URI, account.trim(), streamType.trim(), streamName.trim()));
     }
 
     @Override
-    public URI createRulesUri(final String account, String streamName) {
+    public URI createRulesUri(String streamType, final String account, String streamName) {
         if (account == null || account.trim().isEmpty()) {
             throw new IllegalArgumentException("The account cannot be null or empty");
         }
@@ -61,6 +74,6 @@ public final class DefaultUriStrategy implements UriStrategy {
             throw new IllegalArgumentException("The streamName cannot be null or empty");
         }
         
-        return URI.create(String.format(BASE_GNIP_RULES_URI, account.trim(), streamName.trim()));
+        return URI.create(String.format(BASE_GNIP_RULES_URI, account.trim(), streamType.trim(), streamName.trim()));
     }
 }

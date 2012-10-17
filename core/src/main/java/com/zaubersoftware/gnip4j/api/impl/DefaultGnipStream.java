@@ -82,6 +82,7 @@ public class DefaultGnipStream extends AbstractGnipStream {
     /** stream name for debugging propourse */
     private final String streamName;
     private final URI streamURI;
+    private final String streamType;
     private final RemoteResourceProvider client;
     private final ExecutorService activityService;
     private GnipHttpConsumer httpConsumer;
@@ -102,6 +103,7 @@ public class DefaultGnipStream extends AbstractGnipStream {
             final RemoteResourceProvider client,
             final String account,
             final String streamName,
+            final String streamType,            
             final ExecutorService activityService,
             final UriStrategy baseUriStrategy) {
         if (client == null) {
@@ -120,9 +122,10 @@ public class DefaultGnipStream extends AbstractGnipStream {
             throw new IllegalArgumentException(ERROR_NULL_BASE_URI_STRATEGY);
         }
 
-        this.streamURI = baseUriStrategy.createStreamUri(account, streamName);
+        this.streamURI = baseUriStrategy.createStreamUri(streamType, account, streamName);
         this.client = client;
         this.streamName = streamName;
+        this.streamType = streamType;
         this.activityService = activityService;
     }
 
