@@ -33,8 +33,27 @@ public final class Main {
             "com/zaubersoftware/gnip4j/server/activity/unlimitedActivity.json");
 
     public static void main(final String[] args) throws InterruptedException  {
+      boolean startNormal = true;
                final MockServer mockServer = new MockServer();
-               mockServer.start(ACTIVITIES);
+               if (null != args && args.length > 0) {
+                 if (args.length != 2) {
+                   System.err.println("ERROR: Wrong number of parameters: " + args.length);
+                   System.err.println("Usage: Main [slow <interval in ms>] or [chunk <chunk size>]");
+                   System.exit(-1);               
+                 }
+                 if (args[0].equals("slow")) {
+                   startNormal = false;
+                  int interval = Integer.valueOf(args[1]);
+                  mockServer.startSlowly(ACTIVITIES, interval);
+                 } else if (args[0].equals("chunk")) {
+                   startNormal = false;
+                   int chunkSize = Integer.valueOf(args[1]);
+                   mockServer.startLimited(ACTIVITIES, chunkSize);
+                 } 
+               } 
+               if (startNormal) {
+                 mockServer.start(ACTIVITIES);
+               }
     }
 
 }
