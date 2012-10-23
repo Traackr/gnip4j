@@ -11,3 +11,5 @@ velocity.log
 *.iml
 *.ipr
 *.iws
+
+*.MF
