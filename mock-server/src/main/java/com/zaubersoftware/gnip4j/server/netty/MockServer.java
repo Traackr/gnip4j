@@ -42,9 +42,9 @@ public class MockServer {
     
     void start(Integer port) {
             final GnipServerFactory gnipServerFactory = new NettyGnipServerFactory();
-            gnipServer = gnipServerFactory.createServer(DEFAUL_SERVER_PORT, chunkedInputFactory);
+            gnipServer = gnipServerFactory.createServer(port, chunkedInputFactory);
             gnipServer.start();
-            System.out.println("Gnip server started at port " + DEFAUL_SERVER_PORT);
+            System.out.println("Gnip server started at port " + port);
     }
     
     public void start(final InputStream activities, Integer port) {
