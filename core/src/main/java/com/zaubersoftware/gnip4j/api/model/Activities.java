@@ -15,12 +15,17 @@
  */
 package com.zaubersoftware.gnip4j.api.model;
 
+import java.io.Serializable;
 import java.util.List;
 
 import org.codehaus.jackson.annotate.JsonAutoDetect;
 
      @JsonAutoDetect
-    public  class Activities {
+    public  class Activities implements Serializable  {
+        /**
+       * 
+       */
+      private static final long serialVersionUID = -7796043418440450933L;
         List<Activity> activities;
         /**
          * Creates the JSONDeserializationTest.Activities.

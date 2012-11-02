@@ -26,6 +26,10 @@ package com.zaubersoftware.gnip4j.api.model;
  * 
  */
 public final class Object extends Activity {
+    /**
+   * 
+   */
+  private static final long serialVersionUID = 897931500604987085L;
     private String summary;
     public String getSummary() {
         return summary;

@@ -15,6 +15,7 @@
  */
 package com.zaubersoftware.gnip4j.api.model;
 
+import java.io.Serializable;
 import java.math.BigInteger;
 
 import javax.xml.datatype.XMLGregorianCalendar;
@@ -23,7 +24,11 @@ import org.codehaus.jackson.annotate.JsonAutoDetect;
 import org.codehaus.jackson.annotate.JsonProperty;
 
 @JsonAutoDetect
-public class Activity {
+public class Activity  implements Serializable {
+    /**
+   * 
+   */
+  private static final long serialVersionUID = 4054519118171835382L;
     private InReplyTo inReplyTo;
     private Activity.Location location;
     private Actor actor;
@@ -174,7 +179,11 @@ public class Activity {
      * The following schema fragment specifies the expected content contained
      * within this class.
      */
-    public static class Location{
+    public static class Location implements Serializable {
+        /**
+       * 
+       */
+      private static final long serialVersionUID = 8768458329148991322L;
         private Geo geo;
         private String countryCode;
         private String displayName;

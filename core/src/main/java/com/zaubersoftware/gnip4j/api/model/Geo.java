@@ -15,6 +15,8 @@
  */
 package com.zaubersoftware.gnip4j.api.model;
 
+import java.io.Serializable;
+
 
 /**
  * <p>
@@ -24,7 +26,11 @@ package com.zaubersoftware.gnip4j.api.model;
  * The following schema fragment specifies the expected content contained within
  * this class.
  */
-public class Geo{
+public class Geo implements Serializable {
+    /**
+   * 
+   */
+  private static final long serialVersionUID = 3716718651905145760L;
     private Geometry coordinates;
     private String type;
 

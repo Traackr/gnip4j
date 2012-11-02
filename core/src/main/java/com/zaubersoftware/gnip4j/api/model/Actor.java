@@ -15,6 +15,7 @@
  */
 package com.zaubersoftware.gnip4j.api.model;
 
+import java.io.Serializable;
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.List;
@@ -28,8 +29,12 @@ import javax.xml.datatype.XMLGregorianCalendar;
  * <p>The following schema fragment specifies the expected content contained within this class.
  *
  */
-public final class Actor{
+public final class Actor implements Serializable {
     
+    /**
+   * 
+   */
+  private static final long serialVersionUID = -1117760746790148226L;
     private Actor.Location location;
     private List<String> languages;
     private List<Links> links;
@@ -453,7 +458,11 @@ public final class Actor{
      *
      *
      */
-    public static final class Location{
+    public static final class Location  implements Serializable{
+        /**
+       * 
+       */
+      private static final long serialVersionUID = -2010823433293892892L;
         private String displayName;
         private String objectType;
 

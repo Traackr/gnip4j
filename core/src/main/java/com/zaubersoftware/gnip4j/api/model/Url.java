@@ -15,6 +15,8 @@
  */
 package com.zaubersoftware.gnip4j.api.model;
 
+import java.io.Serializable;
+
 import org.codehaus.jackson.annotate.JsonProperty;
 
 /**
@@ -24,7 +26,12 @@ import org.codehaus.jackson.annotate.JsonProperty;
  * @author Juan F. Codagnone
  * @since May 28, 2011
  */
-public class Url {
+public class Url implements Serializable {
+    /**
+   * 
+   */
+  private static final long serialVersionUID = 7347864047290041923L;
+
     private String url;
 
     @JsonProperty(value = "expanded_url")

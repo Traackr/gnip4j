@@ -15,6 +15,8 @@
  */
 package com.zaubersoftware.gnip4j.api.model;
 
+import java.io.Serializable;
+
 import org.codehaus.jackson.annotate.JsonAutoDetect;
 import org.codehaus.jackson.annotate.JsonAutoDetect.Visibility;
 
@@ -27,8 +29,15 @@ import org.codehaus.jackson.annotate.JsonAutoDetect.Visibility;
  */
 
 @JsonAutoDetect(getterVisibility=Visibility.PUBLIC_ONLY)
-public class Point implements Geometry{
+public class Point implements Geometry, Serializable{
     
+    /**
+   * 
+   */
+  private static final long serialVersionUID = 5482676484274730718L;
+
+
+
     /**
      * Creates the Point.
      *

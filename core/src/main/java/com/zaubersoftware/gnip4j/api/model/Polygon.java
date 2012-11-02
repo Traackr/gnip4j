@@ -15,6 +15,7 @@
  */
 package com.zaubersoftware.gnip4j.api.model;
 
+import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
@@ -28,8 +29,12 @@ import org.codehaus.jackson.annotate.JsonAutoDetect.Visibility;
  */
 
 @JsonAutoDetect(getterVisibility=Visibility.PUBLIC_ONLY)
-public class Polygon implements Geometry, Iterable<Point> {
+public class Polygon implements Geometry, Iterable<Point>, Serializable {
     
+    /**
+   * 
+   */
+  private static final long serialVersionUID = -4169471438260604146L;
     private List<Point> points;
     
     

@@ -27,32 +27,39 @@ import com.zaubersoftware.gnip4j.server.netty.MockServer;
  */
 public final class Main {
 
-    private static final int DEFAUL_SERVER_PORT = 8080;
     private static final InputStream ACTIVITIES = Main.class.getClassLoader().getResourceAsStream(
             //"com/zaubersoftware/gnip4j/server/activity/activities.json");
             "com/zaubersoftware/gnip4j/server/activity/unlimitedActivity.json");
 
     public static void main(final String[] args) throws InterruptedException  {
       boolean startNormal = true;
+      Integer port = 8080;
+
+      if (args.length >= 1) {
+        port = Integer.valueOf(args[0]);             
+      } 
+      
+      
+      
                final MockServer mockServer = new MockServer();
-               if (null != args && args.length > 0) {
-                 if (args.length != 2) {
+               if (null != args && args.length > 1) {
+                 if (args.length != 3) {
                    System.err.println("ERROR: Wrong number of parameters: " + args.length);
-                   System.err.println("Usage: Main [slow <interval in ms>] or [chunk <chunk size>]");
+                   System.err.println("Usage: Main <port> [slow <interval in ms>] or [chunk <chunk size>]");
                    System.exit(-1);               
-                 }
-                 if (args[0].equals("slow")) {
+                 } 
+                 if (args[1].equals("slow")) {
                    startNormal = false;
-                  int interval = Integer.valueOf(args[1]);
-                  mockServer.startSlowly(ACTIVITIES, interval);
-                 } else if (args[0].equals("chunk")) {
+                  int interval = Integer.valueOf(args[2]);
+                  mockServer.startSlowly(ACTIVITIES, interval, port);
+                 } else if (args[1].equals("chunk")) {
                    startNormal = false;
-                   int chunkSize = Integer.valueOf(args[1]);
-                   mockServer.startLimited(ACTIVITIES, chunkSize);
+                   int chunkSize = Integer.valueOf(args[2]);
+                   mockServer.startLimited(ACTIVITIES, chunkSize, port);
                  } 
                } 
                if (startNormal) {
-                 mockServer.start(ACTIVITIES);
+                 mockServer.start(ACTIVITIES, port);
                }
     }
 

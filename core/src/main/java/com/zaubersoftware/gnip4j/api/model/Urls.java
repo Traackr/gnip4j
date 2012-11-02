@@ -15,6 +15,7 @@
  */
 package com.zaubersoftware.gnip4j.api.model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,7 +27,11 @@ import org.codehaus.jackson.annotate.JsonProperty;
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  */
-public final class Urls{
+public final class Urls implements Serializable {
+    /**
+   * 
+   */
+  private static final long serialVersionUID = -1883651433490213637L;
     private List<Integer> indices;
     @JsonProperty(value = "expanded_url")
     private String expandedUrl;

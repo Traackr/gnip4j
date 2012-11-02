@@ -15,6 +15,8 @@
  */
 package com.zaubersoftware.gnip4j.api.model;
 
+import java.io.Serializable;
+
 import org.codehaus.jackson.annotate.JsonAutoDetect;
 
 
@@ -25,7 +27,11 @@ import org.codehaus.jackson.annotate.JsonAutoDetect;
  *
  */
 @JsonAutoDetect
-public final class Rule{
+public final class Rule implements Serializable {
+    /**
+   * 
+   */
+  private static final long serialVersionUID = -6252436995868989738L;
     private String value;
     private String tag;
 

@@ -15,6 +15,7 @@
  */
 package com.zaubersoftware.gnip4j.api.model;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,7 +25,11 @@ import java.util.List;
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  */
-public final class Hashtags{
+public final class Hashtags implements Serializable {
+    /**
+   * 
+   */
+  private static final long serialVersionUID = 86716997216140369L;
     private List<Integer> indices;
     private String text;
 

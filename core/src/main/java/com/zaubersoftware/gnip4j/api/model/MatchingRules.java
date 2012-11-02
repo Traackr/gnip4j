@@ -15,6 +15,8 @@
  */
 package com.zaubersoftware.gnip4j.api.model;
 
+import java.io.Serializable;
+
 
 
 /**
@@ -35,7 +37,11 @@ package com.zaubersoftware.gnip4j.api.model;
  *
  *
  */
-public final class MatchingRules{
+public final class MatchingRules implements Serializable {
+    /**
+   * 
+   */
+  private static final long serialVersionUID = -733719655374071957L;
     private String value;
     private String tag;
 

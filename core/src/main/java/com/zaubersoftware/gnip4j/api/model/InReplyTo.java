@@ -15,6 +15,8 @@
  */
 package com.zaubersoftware.gnip4j.api.model;
 
+import java.io.Serializable;
+
 
 
 /**
@@ -22,7 +24,11 @@ package com.zaubersoftware.gnip4j.api.model;
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  */
-public final class InReplyTo{
+public final class InReplyTo implements Serializable {
+    /**
+   * 
+   */
+  private static final long serialVersionUID = -3923655343555223839L;
     private String link;
 
     /**

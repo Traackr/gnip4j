@@ -15,6 +15,8 @@
  */
 package com.zaubersoftware.gnip4j.api.model;
 
+import java.io.Serializable;
+
 
 
 /**
@@ -23,7 +25,11 @@ package com.zaubersoftware.gnip4j.api.model;
  * <p>The following schema fragment specifies the expected content contained within this class.
  *
  */
-public final class Generator{
+public final class Generator implements Serializable {
+    /**
+   * 
+   */
+  private static final long serialVersionUID = -1686236088861867201L;
     private String displayName;
     private String link;
 
