@@ -3,7 +3,7 @@
 	<parent>
 		<artifactId>zauber-gnip4j-parent</artifactId>
 		<groupId>com.zaubersoftware.gnip4j</groupId>
-		<version>1.1-TRAACKR</version>
+		<version>1.2-TRAACKR</version>
 	</parent>
 	<groupId>com.zaubersoftware.gnip4j.documentation</groupId>
 	<artifactId>gnip4j-documentation-parent</artifactId>

@@ -69,10 +69,12 @@ public class GnipRulesTestDriver {
 	
 	@Test
 	public final void testAddRule() {
+	  final Rules addRules = new Rules();
 		final Rule rule = new Rule();
 		rule.setValue("#neverevergonnahappen88");
+		addRules.getRules().add(rule);
 		
-		gnip.addRule(account, streamName, streamType, rule);
+		gnip.addRule(account, streamName, streamType, addRules);
 		
 		final Rules rules = gnip.getRules(account, streamName, streamType);
 		boolean ruleAdded = false;

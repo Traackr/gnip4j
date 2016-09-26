@@ -16,6 +16,7 @@
 package com.zaubersoftware.gnip4j.api;
 
 import java.net.URI;
+import java.util.Date;
 
 /**
  * An strategy to generate {@link URI}s to connect against a Gnip endpoint.
@@ -37,15 +38,6 @@ public interface UriStrategy {
     URI createStreamUri(String streamType, String account, String streamName);
 
     /**
-     * Generates a {@link URI} to connect against a Gnip endpoint to consume the replay stream.
-     *
-     * @param domain
-     * @param dataCollectorId
-     * @return
-     */
-    URI createReplayUri(String streamType, String account, String streamName);
-    
-    /**
      * Generates a {@link URI} to connect against a Gnip endpoint to get/modify rules.
      *
      * @param domain
@@ -53,4 +45,6 @@ public interface UriStrategy {
      * @return
      */
     URI createRulesUri(String streamType, String account, String streamName);
+    
+
 }
