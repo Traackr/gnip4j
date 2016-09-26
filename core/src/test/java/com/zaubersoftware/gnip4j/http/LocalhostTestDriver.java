@@ -16,6 +16,7 @@
 package com.zaubersoftware.gnip4j.http;
 
 import java.net.URI;
+import java.util.Date;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.junit.Test;
@@ -49,14 +50,10 @@ public final class LocalhostTestDriver {
                 }
 
                 @Override
-                public URI createReplayUri(final String streamType, final String domain, final String streamName) {
-                    return URI.create("http://localhost:8080");
-                }
-                
-                @Override
                 public URI createRulesUri(final String streamType, final String domain, final String streamName) {
                     return null;
                 }
+
             };
             final JRERemoteResourceProvider resourceProvider = new JRERemoteResourceProvider(
                     new ImmutableGnipAuthentication("foo", "bar"));

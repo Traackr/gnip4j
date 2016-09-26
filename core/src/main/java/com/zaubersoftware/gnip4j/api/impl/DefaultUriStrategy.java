@@ -16,6 +16,9 @@
 package com.zaubersoftware.gnip4j.api.impl;
 
 import java.net.URI;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import com.zaubersoftware.gnip4j.api.UriStrategy;
 
@@ -36,44 +39,31 @@ import com.zaubersoftware.gnip4j.api.UriStrategy;
  */
 public final class DefaultUriStrategy implements UriStrategy {
     public static final String BASE_GNIP_STREAM_URI = "https://stream.gnip.com:443/accounts/%s/publishers/twitter/streams/%s/%s.json";
-    public static final String BASE_GNIP_REPLAY_URI = "https://stream.gnip.com:443/accounts/%s/publishers/twitter/replay/%s/%s.json";
     public static final String BASE_GNIP_RULES_URI = "https://api.gnip.com:443/accounts/%s/publishers/twitter/streams/%s/%s/rules.json";
-
-    @Override
-    public URI createStreamUri(String streamType, final String account, String streamName) {
-        if (account == null || account.trim().isEmpty()) {
-            throw new IllegalArgumentException("The account cannot be null or empty");
-        }
-        if (streamName == null || streamName.trim().isEmpty()) {
-            throw new IllegalArgumentException("The streamName cannot be null or empty");
-        }
-        
-        
-        return URI.create(String.format(BASE_GNIP_STREAM_URI, account.trim(), streamType.trim(), streamName.trim()));
-    }
+    
+    // Replay Date Format
+    DateFormat format = new SimpleDateFormat("yyyyMMddHHmm");
     
     @Override
-    public URI createReplayUri(String streamType, final String account, String streamName) {
-        if (account == null || account.trim().isEmpty()) {
-            throw new IllegalArgumentException("The account cannot be null or empty");
-        }
-        if (streamName == null || streamName.trim().isEmpty()) {
-            throw new IllegalArgumentException("The streamName cannot be null or empty");
-        }
-        
-        
-        return URI.create(String.format(BASE_GNIP_REPLAY_URI, account.trim(), streamType.trim(), streamName.trim()));
+    public URI createStreamUri(String streamType, final String account, String streamName) {
+        validate(account,streamName);
+        return URI.create(String.format(BASE_GNIP_STREAM_URI, account.trim(), streamType.trim(), streamName.trim()));
     }
+
 
     @Override
     public URI createRulesUri(String streamType, final String account, String streamName) {
+        validate(account,streamName);
+        return URI.create(String.format(BASE_GNIP_RULES_URI, account.trim(), streamType.trim(), streamName.trim()));
+    }
+    
+    
+    private void validate(String account, String streamName) {
         if (account == null || account.trim().isEmpty()) {
             throw new IllegalArgumentException("The account cannot be null or empty");
         }
         if (streamName == null || streamName.trim().isEmpty()) {
             throw new IllegalArgumentException("The streamName cannot be null or empty");
         }
-        
-        return URI.create(String.format(BASE_GNIP_RULES_URI, account.trim(), streamType.trim(), streamName.trim()));
     }
 }

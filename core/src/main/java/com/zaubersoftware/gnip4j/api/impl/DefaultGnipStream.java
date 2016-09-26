@@ -14,11 +14,16 @@
  * limitations under the License.
  */
 package com.zaubersoftware.gnip4j.api.impl;
-import static com.zaubersoftware.gnip4j.api.impl.ErrorCodes.*;
+import static com.zaubersoftware.gnip4j.api.impl.ErrorCodes.ERROR_EMPTY_ACCOUNT;
+import static com.zaubersoftware.gnip4j.api.impl.ErrorCodes.ERROR_EMPTY_STREAM_NAME;
+import static com.zaubersoftware.gnip4j.api.impl.ErrorCodes.ERROR_NULL_ACTIVITY_SERVICE;
+import static com.zaubersoftware.gnip4j.api.impl.ErrorCodes.ERROR_NULL_BASE_URI_STRATEGY;
+import static com.zaubersoftware.gnip4j.api.impl.ErrorCodes.ERROR_NULL_HTTPCLIENT;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
+import java.util.Date;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -81,13 +86,14 @@ public class DefaultGnipStream extends AbstractGnipStream {
 
     /** stream name for debugging propourse */
     private final String streamName;
-    private final URI streamURI;
+    private URI streamURI;
     private final String streamType;
     private final RemoteResourceProvider client;
     private final ExecutorService activityService;
     private GnipHttpConsumer httpConsumer;
     private Thread httpThread;
     private final ModifiableStreamStats stats = new DefaultStreamStats();
+    private final boolean isReplay;
 
     private StreamNotification notification = new StreamNotificationAdapter() {
         @Override
@@ -98,6 +104,37 @@ public class DefaultGnipStream extends AbstractGnipStream {
 
     private boolean captureStats = true;
 
+    /** Creates a Replay HttpGnipStream  */
+    public DefaultGnipStream(
+            final RemoteResourceProvider client,
+            final String account,
+            final String streamName,
+            final String streamType,            
+            final ExecutorService activityService,
+            final UriStrategy baseUriStrategy, Date from, Date to) {
+        if (client == null) {
+            throw new IllegalArgumentException(ERROR_NULL_HTTPCLIENT);
+        }
+        if (account == null || account.trim().length() == 0) {
+            throw new IllegalArgumentException(ERROR_EMPTY_ACCOUNT);
+        }
+        if (streamName == null || streamName.trim().length() == 0) {
+            throw new IllegalArgumentException(ERROR_EMPTY_STREAM_NAME);
+        }
+        if (activityService == null) {
+            throw new IllegalArgumentException(ERROR_NULL_ACTIVITY_SERVICE);
+        }
+        if (baseUriStrategy == null) {
+            throw new IllegalArgumentException(ERROR_NULL_BASE_URI_STRATEGY);
+        }
+
+        this.streamURI = baseUriStrategy.createStreamUri(streamType, account, streamName);
+        this.client = client;
+        this.streamName = streamName;
+        this.streamType = streamType;
+        this.activityService = activityService;
+        this.isReplay = isStreamReplay();
+    }
     /** Creates the HttpGnipStream. */
     public DefaultGnipStream(
             final RemoteResourceProvider client,
@@ -127,6 +164,7 @@ public class DefaultGnipStream extends AbstractGnipStream {
         this.streamName = streamName;
         this.streamType = streamType;
         this.activityService = activityService;
+        this.isReplay = isStreamReplay();
     }
 
     @Override
@@ -237,7 +275,10 @@ public class DefaultGnipStream extends AbstractGnipStream {
                 while (!shuttingDown.get() && !Thread.interrupted()) {
                     try {
                         if(is == null) {
-                            reconnect();
+                          if (!isReplay)
+                            reconnect(); 
+                          else 
+                            doClose();
                         }
                         if(is != null) {
                             final JsonParser parser =  getObjectMapper().getJsonFactory().createJsonParser(is);
@@ -327,7 +368,7 @@ public class DefaultGnipStream extends AbstractGnipStream {
                 logger.debug("{}: Re-connecting stream with Gnip: {}", streamName, streamURI);
                 is = getStreamInputStream();
                 logger.debug("{}: The re-connection has been successfully established", streamName);
-
+                notification.notifyReConnectionSuccess();
                 reConnectionAttempt.set(0);
                 reConnectionWaitTime = INITIAL_RE_CONNECTION_WAIT_TIME;
                 stats.incrementNumberOfSuccessfulReconnections();
@@ -358,5 +399,15 @@ public class DefaultGnipStream extends AbstractGnipStream {
     @Override
     public final StreamStats getStreamStats() {
         return stats;
+    }
+    public URI getStreamURI() {
+      return streamURI;
+    }
+    public void setStreamURI(URI streamURI) {
+      this.streamURI = streamURI;
+    }
+    
+    private boolean isStreamReplay() {
+      return getStreamURI().toString().contains("replay");
     }
 }

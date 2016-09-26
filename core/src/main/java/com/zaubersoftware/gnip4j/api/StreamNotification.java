@@ -57,4 +57,12 @@ public interface StreamNotification {
      * @param waitTime The amount of time to be waited before trying to reconnect.
      */
     void notifyReConnectionAttempt(int attempt, long waitTime);
+    
+    /**
+     * Notifies a re-connection success with Gnip. 
+     * 
+     * @param attempt The amount of re-connection attempts including this notification. Once a reconnection
+     * has been established the counter will be reset.
+     */
+    void notifyReConnectionSuccess();
 }

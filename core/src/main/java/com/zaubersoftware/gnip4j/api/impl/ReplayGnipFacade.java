@@ -15,11 +15,9 @@
  */
 package com.zaubersoftware.gnip4j.api.impl;
 
-import static com.zaubersoftware.gnip4j.api.impl.ErrorCodes.ERROR_NULL_BASE_URI_STRATEGY;
-import static com.zaubersoftware.gnip4j.api.impl.ErrorCodes.ERROR_NULL_HTTPCLIENT;
-
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Date;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -41,39 +39,27 @@ import com.zaubersoftware.gnip4j.api.support.jmx.JMXProvider;
  * @author Guido Marucci Blas
  * @since Apr 29, 2011
  */
-public class DefaultGnipFacade implements GnipFacade {
+public class ReplayGnipFacade extends DefaultGnipFacade {
 
     private static final UriStrategy DEFAULT_BASE_URI_STRATEGY = new DefaultUriStrategy();
 
-    private final RemoteResourceProvider facade;
-    private int streamDefaultWorkers = Runtime.getRuntime().availableProcessors();
-    private boolean useJMX = true;
-    private final UriStrategy baseUriStrategy;
-
     /** Creates the HttpGnipFacade. */
-    public DefaultGnipFacade(final RemoteResourceProvider facade, final UriStrategy baseUriStrategy) {
-        if(facade == null) {
-            throw new IllegalArgumentException(ERROR_NULL_HTTPCLIENT);
-        }
-        if (baseUriStrategy == null) {
-            throw new IllegalArgumentException(ERROR_NULL_BASE_URI_STRATEGY);
-        }
-        this.facade = facade;
-        this.baseUriStrategy = baseUriStrategy;
+    public ReplayGnipFacade(final RemoteResourceProvider facade, final UriStrategy baseUriStrategy) {
+      super(facade, baseUriStrategy);
     }
 
     /** Creates the HttpGnipFacade. */
-    public DefaultGnipFacade(final RemoteResourceProvider facade) {
+    public ReplayGnipFacade(final RemoteResourceProvider facade) {
         this(facade, DEFAULT_BASE_URI_STRATEGY);
     }
 
-    @Override
+
     public final GnipStream createStream(
             final String account,
             final String streamName, final String streamType,
-            final StreamNotification observer) {
-        final ExecutorService executor = Executors.newFixedThreadPool(streamDefaultWorkers);
-        final GnipStream target = createStream(account, streamName, streamType, observer, executor);
+            final StreamNotification observer, Date from, Date to) {
+        final ExecutorService executor = Executors.newFixedThreadPool(getStreamDefaultWorkers());
+        final GnipStream target = createStream(account, streamName, streamType, observer, executor, from, to);
         return new GnipStream() {
             @Override
             public void close() {
@@ -101,13 +87,12 @@ public class DefaultGnipFacade implements GnipFacade {
         };
     }
 
-    @Override
     public final GnipStream createStream(final String account, final String streamName, final String streamType,
-            final StreamNotification observer, final ExecutorService executor) {
-        final DefaultGnipStream stream = createStream(account, streamName, streamType,executor);
+            final StreamNotification observer, final ExecutorService executor, Date from, Date to) {
+        final DefaultGnipStream stream = createStream(account, streamName, streamType,executor, from, to);
         stream.open(observer);
         GnipStream ret = stream;
-        if(useJMX) {
+        if(super.isUseJMX()) {
             ret = new GnipStream() {
                 @Override
                 public String getStreamName() {
@@ -138,25 +123,12 @@ public class DefaultGnipFacade implements GnipFacade {
         return ret;
     }
 
-    public final int getStreamDefaultWorkers() {
-        return streamDefaultWorkers;
-    }
-
-    /** @see #getStreamDefaultWorkers() */
-    public final void setStreamDefaultWorkers(final int streamDefaultWorkers) {
-        if(streamDefaultWorkers < 1) {
-            throw new IllegalArgumentException("Must be >= 1");
-        }
-        this.streamDefaultWorkers = streamDefaultWorkers;
-    }
-
- 
+   
     @Override
-    public Rules getRules(final String account, final String streamName, final String streamType) {
+    public final Rules getRules(final String account, final String streamName, final String streamType) {
         try {
-            final InputStream gnipRestResponseStream = facade.getResource(baseUriStrategy
-                    .createRulesUri(streamType, account, streamName));
-            final JsonParser parser =  DefaultGnipStream.getObjectMapper()
+            final InputStream gnipRestResponseStream = getFacade().getResource(getBaseUriStrategy().createRulesUri(streamType, account, streamName));
+            final JsonParser parser =  ReplayGnipStream.getObjectMapper()
                     .getJsonFactory().createJsonParser(gnipRestResponseStream);
             final Rules rules = parser.readValueAs(Rules.class);
             gnipRestResponseStream.close();
@@ -169,23 +141,15 @@ public class DefaultGnipFacade implements GnipFacade {
     }
 
     @Override
-    public void addRule(final String account, final String streamName, final String streamType, final Rules rules) {
-        facade.postResource(baseUriStrategy.createRulesUri(streamType, account, streamName), rules);
+    public final void addRule(final String account, final String streamName, final String streamType, final Rules rules) {
+        getFacade().postResource(getBaseUriStrategy().createRulesUri(streamType, account, streamName), rules);
     }
     
     @Override
-    public void deleteRule(final String account, final String streamName, final String streamType, final Rules rules) {
-        facade.deleteResource(baseUriStrategy.createRulesUri(streamType, account, streamName), rules);
+    public final void deleteRule(final String account, final String streamName, final String streamType, final Rules rules) {
+      getFacade().deleteResource(getBaseUriStrategy().createRulesUri(streamType, account, streamName), rules);
     }
     
-    public final boolean isUseJMX() {
-        return useJMX;
-    }
-
-
-    public final void setUseJMX(final boolean useJMX) {
-        this.useJMX = useJMX;
-    }
 
     /**
      * Creates a new {@link DefaultGnipStream}
@@ -198,15 +162,7 @@ public class DefaultGnipFacade implements GnipFacade {
     private DefaultGnipStream createStream(
             final String account,
             final String streamName, final String streamType,
-            final ExecutorService executor) {
-            return new DefaultGnipStream(facade, account, streamName, streamType, executor, baseUriStrategy);
-    }
-
-    public RemoteResourceProvider getFacade() {
-      return facade;
-    }
-
-    public UriStrategy getBaseUriStrategy() {
-      return baseUriStrategy;
+            final ExecutorService executor, final Date from, final Date to) {
+            return new ReplayGnipStream(getFacade(), account, streamName, streamType, executor, getBaseUriStrategy(), from, to);
     }
 }

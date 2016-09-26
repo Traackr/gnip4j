@@ -93,6 +93,11 @@ public final class ReconnectionTest {
                     stream.close();
                 }
             }
+
+            @Override
+            public void notifyReConnectionSuccess() {
+             out.append("ReconnectionSuccess.\n");
+            }
         };
         stream.open(n);
         stream.await();

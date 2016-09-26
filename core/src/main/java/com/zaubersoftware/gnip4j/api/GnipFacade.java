@@ -18,7 +18,6 @@ package com.zaubersoftware.gnip4j.api;
 import java.util.concurrent.ExecutorService;
 
 import com.zaubersoftware.gnip4j.api.model.Activity;
-import com.zaubersoftware.gnip4j.api.model.Rule;
 import com.zaubersoftware.gnip4j.api.model.Rules;
 
 /**
@@ -48,6 +47,7 @@ public interface GnipFacade {
                             StreamNotification observer, 
                             ExecutorService executorService);
     
+    
     /**
      * Gnip provides a REST interface to the rules configured for each data collector.
      * They can be modified either through this interface, or through the UI. These
@@ -72,7 +72,8 @@ public interface GnipFacade {
      * @param streamName the streamName
      * @param rule The Rule object to add to the tracker.
      */
-    void addRule(String account, String streamName, String streamType, Rule rule);
+    void addRule(String account, String streamName, String streamType, Rules rules);
     
-    void deleteRule(String account, String streamName, String streamType, Rule rule);
+    void deleteRule(String account, String streamName, String streamType, Rules rules);
+  
 }
