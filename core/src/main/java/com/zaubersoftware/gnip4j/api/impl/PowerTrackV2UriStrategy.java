@@ -22,11 +22,11 @@ import com.zaubersoftware.gnip4j.api.UriStrategy;
 /**
  * Implementation of {@link UriStrategy} that creates {@link URI}s to connect
  * to PowerTrack V2 Gnip endpoints which are different than those used in DefaultUriStrategy
- * 
+ *
  * As of 10/1/2015 PowerTrack V2 is in private beta.
- * 
+ *
  * https://stream-data-api.twitter.com/stream/powertrack/accounts/<account>/publishers/twitter/<stream>.json
- * https://data-api.twitter.com/rules/powertrack/accounts/<account>/publishers/twitter/<stream>.json"
+ * https://gnip-api.twitter.com/rules/powertrack/accounts/<account>/publishers/twitter/<stream>.json"
  *
  * <p>
  * The base URI format for stream is {@link PowerTrackV2UriStrategy#BASE_GNIP_URI_FMT}
@@ -48,9 +48,9 @@ public final class PowerTrackV2UriStrategy implements UriStrategy {
     private String streamUrlBase = DEFAULT_STREAM_URL_BASE;
     private String ruleUrlBase = DEFAULT_RULE_URL_BASE;
 
-    
+
     private final String publisher;
-    
+
     /** Creates the DefaultUriStrategy. */
     public PowerTrackV2UriStrategy() {
         this("twitter");
@@ -71,25 +71,27 @@ public final class PowerTrackV2UriStrategy implements UriStrategy {
         if (streamName == null || streamName.trim().isEmpty()) {
             throw new IllegalArgumentException("The streamName cannot be null or empty");
         }
-        
-        return URI.create(String.format(streamUrlBase + PATH_GNIP_STREAM_URI, account.trim(), publisher.trim(), streamName.trim()));
+
+        return URI.create(String.format(
+            this.streamUrlBase + PATH_GNIP_STREAM_URI, account.trim(),
+            this.publisher.trim(), streamName.trim()));
     }
 
     @Override
     public URI createRulesUri(final String account, final String streamName) {
         return URI.create(createRulesBaseUrl(account, streamName));
     }
-    
+
     @Override
     public URI createRulesDeleteUri(final String account, final String streamName) {
     	 return URI.create(createRulesBaseUrl(account, streamName) + "?_method=delete");
     }
-    
+
     @Override
 	public String getHttpMethodForRulesDelete() {
 		return UriStrategy.HTTP_POST;
 	}
-    
+
     private String createRulesBaseUrl(final String account, final String streamName) {
     	 if (account == null || account.trim().isEmpty()) {
              throw new IllegalArgumentException("The account cannot be null or empty");
@@ -97,31 +99,32 @@ public final class PowerTrackV2UriStrategy implements UriStrategy {
          if (streamName == null || streamName.trim().isEmpty()) {
              throw new IllegalArgumentException("The streamName cannot be null or empty");
          }
-         
-         return String.format(ruleUrlBase + PATH_GNIP_RULES_URI, account.trim(), publisher.trim(), streamName.trim());
+
+         return String.format(
+             this.ruleUrlBase + PATH_GNIP_RULES_URI, account.trim(), this.publisher.trim(), streamName.trim());
     }
-    
+
     public final String getStreamUrlBase() {
-        return streamUrlBase;
+        return this.streamUrlBase;
     }
-    
+
     public final void setStreamUrlBase(final String streamUrlBase) {
         if(streamUrlBase == null) {
             throw new IllegalArgumentException("streamUrlBase can't be null");
         }
         this.streamUrlBase = streamUrlBase;
     }
-    
+
     public final String getRuleUrlBase() {
-        return ruleUrlBase;
+        return this.ruleUrlBase;
     }
-    
+
     public final void setRuleUrlBase(final  String ruleUrlBase) {
         if(ruleUrlBase == null) {
             throw new IllegalArgumentException("streamUrlBase can't be null");
         }
         this.ruleUrlBase = ruleUrlBase;
     }
-    
-    
+
+
 }

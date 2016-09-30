@@ -13,6 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package com.zaubersoftware.gnip4j.api.impl;
 
 import com.zaubersoftware.gnip4j.api.UriStrategy;
@@ -43,13 +44,16 @@ import java.util.Date;
  * @since 09/29/16
  */
 public class PowerTrackV2ReplayUriStrategy implements UriStrategy {
+  public static final String DEFAULT_REPLAY_STREAM_URL_BASE = "https://gnip-stream.gnip.com";
+  public static final String DEFAULT_REPLAY_RULE_URL_BASE
+      = PowerTrackV2UriStrategy.DEFAULT_RULE_URL_BASE;
   public static final String PATH_GNIP_REPLAY_STREAM_URI
       = "/replay/powertrack/accounts/%s/publishers/%s/%s.json?fromDate=%s&toDate=%s";
   public static final String PATH_GNIP_REPLAY_RULES_URI
       = "/rules/powertrack-replay/accounts/%s/publishers/%s/%s.json";
 
-  private String streamUrlBase = PowerTrackV2UriStrategy.DEFAULT_STREAM_URL_BASE;
-  private String ruleUrlBase = PowerTrackV2UriStrategy.DEFAULT_RULE_URL_BASE;
+  private String streamUrlBase = DEFAULT_REPLAY_STREAM_URL_BASE;
+  private String ruleUrlBase = DEFAULT_REPLAY_RULE_URL_BASE;
   private DateFormat formatter = new SimpleDateFormat("yyyyMMddHHmm");
 
   private final String publisher;
