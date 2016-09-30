@@ -55,15 +55,27 @@
     <url>https://github.com/zaubersoftware/gnip4j/issues</url>
   </issueManagement>
  	<distributionManagement>
-               <repository> 
-                 <id>sonatype-nexus-staging</id> 
-                 <name>Nexus Release Repository</name> 
-                 <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url> 
-               </repository> 
+               <!-- <repository> --> 
+               <!--   <id>sonatype-nexus-staging</id> --> 
+               <!--   <name>Nexus Release Repository</name> --> 
+               <!--   <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url> --> 
+               <!-- </repository> --> 
+		<!-- <snapshotRepository> -->
+			<!-- <id>zauber-code-snapshots</id> -->
+			<!-- <name>Zauber Code Snapshots</name> -->
+			<!-- <url>https://repo1.flowics.com/content/repositories/zauber-code-snapshots</url> -->
+		<!-- </snapshotRepository> -->
+		<repository>
+		  <uniqueVersion>false</uniqueVersion>
+		  <id>nexus-private</id>
+		  <url>http://repository.traackr.com/nexus/content/repositories/traackr-private/</url>
+		  <layout>default</layout>
+		</repository>
 		<snapshotRepository>
-			<id>zauber-code-snapshots</id>
-			<name>Zauber Code Snapshots</name>
-			<url>https://repo1.flowics.com/content/repositories/zauber-code-snapshots</url>
+		  <uniqueVersion>true</uniqueVersion>
+		  <id>nexus-private-snapshots</id>
+		  <url>http://repository.traackr.com/nexus/content/repositories/traackr-private-snapshots/</url>
+		  <layout>default</layout>
 		</snapshotRepository>
 	</distributionManagement>
 
