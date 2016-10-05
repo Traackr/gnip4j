@@ -15,19 +15,23 @@
  */
 package com.zaubersoftware.gnip4j.http;
 
-import static com.zaubersoftware.gnip4j.api.impl.ErrorCodes.*;
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
-
-import java.util.concurrent.ExecutorService;
-
-import org.junit.Test;
+import static com.zaubersoftware.gnip4j.api.impl.ErrorCodes.ERROR_EMPTY_ACCOUNT;
+import static com.zaubersoftware.gnip4j.api.impl.ErrorCodes.ERROR_NULL_ACTIVITY_SERVICE;
+import static com.zaubersoftware.gnip4j.api.impl.ErrorCodes.ERROR_NULL_BASE_URI_STRATEGY;
+import static com.zaubersoftware.gnip4j.api.impl.ErrorCodes.ERROR_NULL_HTTPCLIENT;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
+import static org.mockito.Mockito.mock;
 
 import com.zaubersoftware.gnip4j.api.RemoteResourceProvider;
 import com.zaubersoftware.gnip4j.api.UriStrategy;
 import com.zaubersoftware.gnip4j.api.impl.DefaultGnipFacade;
 import com.zaubersoftware.gnip4j.api.impl.DefaultGnipStream;
 import com.zaubersoftware.gnip4j.api.impl.DefaultUriStrategy;
+
+import org.junit.Test;
+
+import java.util.concurrent.ExecutorService;
 
 
 /**

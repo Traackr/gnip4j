@@ -15,10 +15,7 @@
  */
 package com.zaubersoftware.gnip4j.http;
 
-import static org.junit.Assert.*;
-
-import org.junit.Before;
-import org.junit.Test;
+import static org.junit.Assert.assertTrue;
 
 import com.zaubersoftware.gnip4j.api.GnipFacade;
 import com.zaubersoftware.gnip4j.api.impl.DefaultGnipFacade;
@@ -27,19 +24,22 @@ import com.zaubersoftware.gnip4j.api.model.Rule;
 import com.zaubersoftware.gnip4j.api.model.Rules;
 import com.zaubersoftware.gnip4j.api.support.http.JRERemoteResourceProvider;
 
+import org.junit.Before;
+import org.junit.Test;
+
 public class GnipRulesTestDriver {
 
 	private GnipFacade gnip;
 	private String account;
 	private String streamName;
-	
+
 	@Before
 	public void setUp() {
 	    final String username = System.getProperty("gnip.username");
         final String password = System.getProperty("gnip.password");
         account = System.getProperty("gnip.account");
         streamName = System.getProperty("gnip.stream");
-        
+
         if(username == null) {
             throw new IllegalArgumentException("Missing gnip.username");
         }
@@ -52,26 +52,26 @@ public class GnipRulesTestDriver {
         if(streamName == null) {
             throw new IllegalArgumentException("Missing gnip.stream");
         }
-        
+
         gnip = new DefaultGnipFacade(new JRERemoteResourceProvider(new ImmutableGnipAuthentication(username, password)));
 	}
-	
+
 	@Test
 	public final void testGetRules() {
         final Rules rules = gnip.getRules(account, streamName);
-        
+
         for (final Rule rule : rules.getRules()) {
         	System.out.println("Found rule " + rule.getValue() + " with tag: " + rule.getTag());
         }
 	}
-	
+
 	@Test
 	public final void testAddRule() {
 		final Rule rule = new Rule();
 		rule.setValue("#neverevergonnahappen88");
-		
+
 		gnip.addRule(account, streamName, rule);
-		
+
 		final Rules rules = gnip.getRules(account, streamName);
 		boolean ruleAdded = false;
 		for (final Rule existingRule : rules.getRules()) {

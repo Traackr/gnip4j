@@ -15,6 +15,25 @@
  */
 package com.zaubersoftware.gnip4j.http;
 
+import com.zaubersoftware.gnip4j.api.GnipStream;
+import com.zaubersoftware.gnip4j.api.RemoteResourceProvider;
+import com.zaubersoftware.gnip4j.api.StreamNotification;
+import com.zaubersoftware.gnip4j.api.UriStrategy;
+import com.zaubersoftware.gnip4j.api.exception.AuthenticationGnipException;
+import com.zaubersoftware.gnip4j.api.exception.GnipException;
+import com.zaubersoftware.gnip4j.api.exception.TransportGnipException;
+import com.zaubersoftware.gnip4j.api.impl.DefaultGnipStream;
+import com.zaubersoftware.gnip4j.api.impl.DefaultUriStrategy;
+import com.zaubersoftware.gnip4j.api.impl.formats.ActivityUnmarshaller;
+import com.zaubersoftware.gnip4j.api.impl.formats.JsonActivityFeedProcessor;
+import com.zaubersoftware.gnip4j.api.model.Activity;
+
+import org.apache.commons.io.IOUtils;
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
+import org.junit.Assert;
+import org.junit.Test;
+
 import java.io.InputStream;
 import java.net.URI;
 import java.util.ArrayList;
@@ -28,25 +47,6 @@ import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicInteger;
-
-import org.apache.commons.io.IOUtils;
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
-import org.junit.Assert;
-import org.junit.Test;
-
-import com.zaubersoftware.gnip4j.api.GnipStream;
-import com.zaubersoftware.gnip4j.api.RemoteResourceProvider;
-import com.zaubersoftware.gnip4j.api.StreamNotification;
-import com.zaubersoftware.gnip4j.api.UriStrategy;
-import com.zaubersoftware.gnip4j.api.exception.AuthenticationGnipException;
-import com.zaubersoftware.gnip4j.api.exception.GnipException;
-import com.zaubersoftware.gnip4j.api.exception.TransportGnipException;
-import com.zaubersoftware.gnip4j.api.impl.DefaultGnipStream;
-import com.zaubersoftware.gnip4j.api.impl.DefaultUriStrategy;
-import com.zaubersoftware.gnip4j.api.impl.formats.ActivityUnmarshaller;
-import com.zaubersoftware.gnip4j.api.impl.formats.JsonActivityFeedProcessor;
-import com.zaubersoftware.gnip4j.api.model.Activity;
 
 /**
  * Re connection algorithm test
@@ -101,7 +101,7 @@ public final class ReconnectionTest {
 			public void notifyReConnected(final int attempt, final long elaspedDisconnectedTime) {
 				out.append(String.format(
                         "Connection attempt %d succeeded\n", attempt));
-				
+
 			}
         };
         final JsonActivityFeedProcessor processor = new JsonActivityFeedProcessor("stream", Executors.newSingleThreadExecutor(), n);
@@ -164,7 +164,7 @@ class MockRemoteResourceProvider implements RemoteResourceProvider {
 	public void deleteResource(final URI uri, final Object resource)
 			throws AuthenticationGnipException, TransportGnipException {
 		// TODO Auto-generated method stub
-		
+
 	}
 }
 

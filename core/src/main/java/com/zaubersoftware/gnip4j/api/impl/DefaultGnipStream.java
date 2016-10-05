@@ -14,15 +14,11 @@
  * limitations under the License.
  */
 package com.zaubersoftware.gnip4j.api.impl;
-import static com.zaubersoftware.gnip4j.api.impl.ErrorCodes.*;
-
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URI;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicLong;
+import static com.zaubersoftware.gnip4j.api.impl.ErrorCodes.ERROR_EMPTY_ACCOUNT;
+import static com.zaubersoftware.gnip4j.api.impl.ErrorCodes.ERROR_EMPTY_STREAM_NAME;
+import static com.zaubersoftware.gnip4j.api.impl.ErrorCodes.ERROR_NULL_ACTIVITY_SERVICE;
+import static com.zaubersoftware.gnip4j.api.impl.ErrorCodes.ERROR_NULL_BASE_URI_STRATEGY;
+import static com.zaubersoftware.gnip4j.api.impl.ErrorCodes.ERROR_NULL_HTTPCLIENT;
 
 import com.zaubersoftware.gnip4j.api.GnipStream;
 import com.zaubersoftware.gnip4j.api.RemoteResourceProvider;
@@ -40,6 +36,14 @@ import com.zaubersoftware.gnip4j.api.stats.StreamStats;
 import com.zaubersoftware.gnip4j.api.stats.StreamStatsInputStream;
 import com.zaubersoftware.gnip4j.api.support.logging.LoggerFactory;
 import com.zaubersoftware.gnip4j.api.support.logging.spi.Logger;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URI;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicLong;
 
 /**
  * Implementation acording
@@ -200,7 +204,7 @@ public class DefaultGnipStream extends AbstractGnipStream {
 
         private InputStream is;
         private final FeedProcessor processor;
-        
+
         /** Creates the GnipHttpConsumer. */
         public GnipHttpConsumer(final InputStream response, final FeedProcessor proccesor) {
             if(response == null) {
