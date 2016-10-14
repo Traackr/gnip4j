@@ -224,10 +224,15 @@ public class DefaultGnipStream extends AbstractGnipStream {
                 while (!shuttingDown.get() && !Thread.interrupted()) {
                     try {
                         if(is == null) {
-                        	if (disconnectedSinceTime == null){
-                        		disconnectedSinceTime = new AtomicLong(System.currentTimeMillis());
-                        	}
+                          if (disconnectedSinceTime == null) {
+                            disconnectedSinceTime = new AtomicLong(System.currentTimeMillis());
+                          }
+                          if (streamURI.toString().contains("replay")) {
+                            // When a replay stream is finished, close the stream
+                            doClose();
+                          } else {
                             reconnect();
+                          }
                         }
                         if(is != null) {
                             processor.process(is,stats);
