@@ -15,9 +15,9 @@
  */
 package com.zaubersoftware.gnip4j.api.impl;
 
-import java.net.URI;
-
 import com.zaubersoftware.gnip4j.api.UriStrategy;
+
+import java.net.URI;
 
 /**
  * Implementation of {@link UriStrategy} that creates {@link URI}s to connect
@@ -29,11 +29,11 @@ import com.zaubersoftware.gnip4j.api.UriStrategy;
  * https://gnip-api.twitter.com/rules/powertrack/accounts/<account>/publishers/twitter/<stream>.json"
  *
  * <p>
- * The base URI format for stream is {@link PowerTrackV2UriStrategy#BASE_GNIP_URI_FMT}
+ * The base URI format for stream is {@link PowerTrackV2UriStrategy#DEFAULT_STREAM_URL_BASE}
  * <p>
  *
  * <p>
- * The base URI format for rules is {@link PowerTrackV2UriStrategy#BASE_GNIP_RULES_URI_FMT}
+ * The base URI format for rules is {@link PowerTrackV2UriStrategy#DEFAULT_RULE_URL_BASE}
  * <p>
  *
  * @author mjmeyer
@@ -72,9 +72,7 @@ public final class PowerTrackV2UriStrategy implements UriStrategy {
             throw new IllegalArgumentException("The streamName cannot be null or empty");
         }
 
-        return URI.create(String.format(
-            this.streamUrlBase + PATH_GNIP_STREAM_URI, account.trim(),
-            this.publisher.trim(), streamName.trim()));
+        return URI.create(String.format(streamUrlBase + PATH_GNIP_STREAM_URI, account.trim(), publisher.trim(), streamName.trim()));
     }
 
     @Override
@@ -100,12 +98,11 @@ public final class PowerTrackV2UriStrategy implements UriStrategy {
              throw new IllegalArgumentException("The streamName cannot be null or empty");
          }
 
-         return String.format(
-             this.ruleUrlBase + PATH_GNIP_RULES_URI, account.trim(), this.publisher.trim(), streamName.trim());
+         return String.format(ruleUrlBase + PATH_GNIP_RULES_URI, account.trim(), publisher.trim(), streamName.trim());
     }
 
     public final String getStreamUrlBase() {
-        return this.streamUrlBase;
+        return streamUrlBase;
     }
 
     public final void setStreamUrlBase(final String streamUrlBase) {
@@ -116,7 +113,7 @@ public final class PowerTrackV2UriStrategy implements UriStrategy {
     }
 
     public final String getRuleUrlBase() {
-        return this.ruleUrlBase;
+        return ruleUrlBase;
     }
 
     public final void setRuleUrlBase(final  String ruleUrlBase) {

@@ -15,20 +15,20 @@
  */
 package com.zaubersoftware.gnip4j.api.impl;
 
-import java.net.URI;
-
 import com.zaubersoftware.gnip4j.api.UriStrategy;
+
+import java.net.URI;
 
 /**
  * The default implementation of {@link UriStrategy} that creates {@link URI}s to connect
  * to the real Gnip endpoint.
  *
  * <p>
- * The base URI format for stream is {@link DefaultUriStrategy#BASE_GNIP_URI_FMT}
+ * The base URI format for stream is {@link DefaultUriStrategy#DEFAULT_STREAM_URL_BASE}
  * <p>
  *
  * <p>
- * The base URI format for rules is {@link DefaultUriStrategy#BASE_GNIP_RULES_URI_FMT}
+ * The base URI format for rules is {@link DefaultUriStrategy#DEFAULT_RULE_URL_BASE}
  * <p>
  *
  * @author Guido Marucci Blas
@@ -39,13 +39,13 @@ public final class DefaultUriStrategy implements UriStrategy {
     public static final String DEFAULT_RULE_URL_BASE = "https://api.gnip.com:443";
     public static final String PATH_GNIP_STREAM_URI =  "/accounts/%s/publishers/%s/streams/track/%s.json";
     public static final String PATH_GNIP_RULES_URI =  "/accounts/%s/publishers/%s/streams/track/%s/rules.json";
-    
+
     private String streamUrlBase = DEFAULT_STREAM_URL_BASE;
     private String ruleUrlBase = DEFAULT_RULE_URL_BASE;
-    
-    
+
+
     private final String publisher;
-    
+
     /** Creates the DefaultUriStrategy. */
     public DefaultUriStrategy() {
         this("twitter");
@@ -66,8 +66,8 @@ public final class DefaultUriStrategy implements UriStrategy {
         if (streamName == null || streamName.trim().isEmpty()) {
             throw new IllegalArgumentException("The streamName cannot be null or empty");
         }
-        
-        
+
+
         return URI.create(String.format(streamUrlBase + PATH_GNIP_STREAM_URI, account.trim(), publisher.trim(), streamName.trim()));
     }
 
@@ -79,41 +79,41 @@ public final class DefaultUriStrategy implements UriStrategy {
         if (streamName == null || streamName.trim().isEmpty()) {
             throw new IllegalArgumentException("The streamName cannot be null or empty");
         }
-        
+
         return URI.create(String.format(ruleUrlBase + PATH_GNIP_RULES_URI, account.trim(), publisher.trim(), streamName.trim()));
     }
-    
+
     @Override
     public URI createRulesDeleteUri(final String account, final String streamName) {
     	return createRulesUri(account, streamName);
     }
-    
+
     @Override
 	public String getHttpMethodForRulesDelete() {
 		return UriStrategy.HTTP_DELETE;
 	}
-    
+
     public final String getStreamUrlBase() {
         return streamUrlBase;
     }
-    
+
     public final void setStreamUrlBase(final String streamUrlBase) {
         if(streamUrlBase == null) {
             throw new IllegalArgumentException("streamUrlBase can't be null");
         }
         this.streamUrlBase = streamUrlBase;
     }
-    
+
     public final String getRuleUrlBase() {
         return ruleUrlBase;
     }
-    
+
     public final void setRuleUrlBase(final  String ruleUrlBase) {
         if(ruleUrlBase == null) {
             throw new IllegalArgumentException("streamUrlBase can't be null");
         }
         this.ruleUrlBase = ruleUrlBase;
     }
-    
-    
+
+
 }

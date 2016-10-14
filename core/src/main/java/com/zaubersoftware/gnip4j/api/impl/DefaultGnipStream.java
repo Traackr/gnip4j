@@ -49,7 +49,7 @@ import java.util.concurrent.atomic.AtomicLong;
  * Implementation acording
  * http://docs.gnip.com/w/page/23724581/Gnip-Full-Documentation#streaminghttp
  *
- * <verbatim>
+ * {@literal
  *                                               Json
  *   +----------+   HTTP   +------------------+ (String) +--------------+        +-----------------+
  *   | data     | -------> | GnipHttpConsumer |-----+--> | JsonConsumer |----+   | ActivityConsumer|
@@ -58,7 +58,7 @@ import java.util.concurrent.atomic.AtomicLong;
  *                                                  |    +--------------+    |   +-----------------+
  *                                                  +--> | JsonConsumer |----+   | ActivityConsumer|
  *                                                       +--------------+        +-----------------+
- * </verbatim>
+ * }
  *
  * @author Guido Marucci Blas
  * @since Apr 29, 2011
