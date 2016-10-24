@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2012 Zauber S.A. <http://www.zaubersoftware.com/>
+ * Copyright (c) 2011-2016 Zauber S.A. <http://flowics.com/>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -69,14 +69,7 @@ public class HttpGnipServerHandler extends SimpleChannelUpstreamHandler {
         }
 
         final String uri = request.getUri();
-        if (uri.equals("/fake-stream")) {
-            final HttpResponse response = new DefaultHttpResponse(HTTP_1_1, OK);
-            response.setHeader(TRANSFER_ENCODING, "chunked");
-            response.setChunked(true);
-            final Channel ch = e.getChannel();
-            ch.write(response);
-            ch.write(getChunkedInput());
-        } else if (uri.equals("/")) {
+        if (uri.equals("/")) {
             final HttpResponse response = new DefaultHttpResponse(HTTP_1_1, OK);
             response.setStatus(MOVED_PERMANENTLY);
             response.setHeader(LOCATION, "/fake-stream");
@@ -88,8 +81,14 @@ public class HttpGnipServerHandler extends SimpleChannelUpstreamHandler {
             writeFuture = ch.write(response);
             writeFuture.addListener(ChannelFutureListener.CLOSE);
         } else {
-            sendError(ctx, NOT_FOUND);
-            return;
+            final HttpResponse response = new DefaultHttpResponse(HTTP_1_1, OK);
+            response.setHeader(TRANSFER_ENCODING, "chunked");
+            response.setChunked(true);
+            final Channel ch = e.getChannel();
+            ch.write(response);
+            ch.write(getChunkedInput());
+//            sendError(ctx, NOT_FOUND);
+//            return;
         }
     }
 

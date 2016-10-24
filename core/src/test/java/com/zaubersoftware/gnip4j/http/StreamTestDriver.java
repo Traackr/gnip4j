@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2012 Zauber S.A. <http://www.zaubersoftware.com/>
+ * Copyright (c) 2011-2016 Zauber S.A. <http://flowics.com/>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -45,8 +45,7 @@ public final class StreamTestDriver {
         final String password = System.getProperty("gnip.password");
         final String account = System.getProperty("gnip.account");
         final String streamName = System.getProperty("gnip.stream");
-        final String streamType = System.getProperty("gnip.streamType");
-
+        
         if(username == null) {
             throw new IllegalArgumentException("Missing gnip.username");
         }
@@ -65,7 +64,7 @@ public final class StreamTestDriver {
             
             System.out.println("-- Creating stream");
             final AtomicInteger counter = new AtomicInteger();
-            final StreamNotificationAdapter n = new StreamNotificationAdapter() {
+            final StreamNotificationAdapter<Activity> n = new StreamNotificationAdapter<Activity>() {
                 @Override
                 public void notify(final Activity activity, final GnipStream stream) {
                     final int i = counter.getAndIncrement();
@@ -76,12 +75,17 @@ public final class StreamTestDriver {
                     System.out.println(i + "-" + activity.getBody() + " " + activity.getGnip().getMatchingRules());
                 }
             };
-            final GnipStream stream = gnip.createStream(account, streamName, streamType, n);
+            
+            final GnipStream stream = gnip.createPowertrackStream(Activity.class)
+                                        .withAccount(account)
+                                        .withType(streamName)
+                                        .withObserver(n)
+                                        .build();
             System.out.println("-- Awaiting for stream to terminate");
             stream.await();
             System.out.println("-- Shutting down");
 
-        }   catch(Throwable t) {
+        }   catch(final Throwable t) {
             System.out.println(t.getMessage());
             t.printStackTrace();
         }

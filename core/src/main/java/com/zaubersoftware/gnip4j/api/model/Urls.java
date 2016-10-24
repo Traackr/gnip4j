@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2012 Zauber S.A. <http://www.zaubersoftware.com/>
+ * Copyright (c) 2011-2016 Zauber S.A. <http://flowics.com/>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,11 +27,8 @@ import org.codehaus.jackson.annotate.JsonProperty;
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  */
-public final class Urls implements Serializable {
-    /**
-   * 
-   */
-  private static final long serialVersionUID = -1883651433490213637L;
+public class Urls implements Serializable {
+    private static final long serialVersionUID = 1L;
     private List<Integer> indices;
     @JsonProperty(value = "expanded_url")
     private String expandedUrl;
@@ -89,7 +86,7 @@ public final class Urls implements Serializable {
      *     {@link String }
      *     
      */
-    public void setExpandedUrl(String value) {
+    public void setExpandedUrl(final String value) {
         this.expandedUrl = value;
     }
 
@@ -125,13 +122,14 @@ public final class Urls implements Serializable {
     public String getDisplayUrl() {
         return displayUrl;
     }
-    /**
-     * Sets the displayUrl. 
-     *
-     * @param displayUrl <code>String</code> with the displayUrl.
-     */
+
     public void setDisplayUrl(final String displayUrl) {
         this.displayUrl = displayUrl;
     }
+
+    public void setIndices(final List<Integer> indices) {
+        this.indices = indices;
+    }
+    
     
 }

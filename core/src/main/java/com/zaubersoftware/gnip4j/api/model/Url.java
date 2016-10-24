@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2012 Zauber S.A. <http://www.zaubersoftware.com/>
+ * Copyright (c) 2011-2016 Zauber S.A. <http://flowics.com/>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,15 +27,15 @@ import org.codehaus.jackson.annotate.JsonProperty;
  * @since May 28, 2011
  */
 public class Url implements Serializable {
-    /**
-   * 
-   */
-  private static final long serialVersionUID = 7347864047290041923L;
+    private static final long serialVersionUID = 1L;
 
     private String url;
 
     @JsonProperty(value = "expanded_url")
     private String expandedUrl;
+
+    @JsonProperty(value = "expanded_status")
+    private Integer expandedStatus;
 
     public final String getUrl() {
         return url;
@@ -52,4 +52,13 @@ public class Url implements Serializable {
     public final void setExpandedUrl(final String expandedUrl) {
         this.expandedUrl = expandedUrl;
     }
+
+    public Integer getExpandedStatus() {
+        return expandedStatus;
+    }
+
+    public void setExpandedStatus(final Integer expandedStatus) {
+        this.expandedStatus = expandedStatus;
+    }
+
 }

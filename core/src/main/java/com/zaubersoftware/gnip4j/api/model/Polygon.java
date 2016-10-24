@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2012 Zauber S.A. <http://www.zaubersoftware.com/>
+ * Copyright (c) 2011-2016 Zauber S.A. <http://flowics.com/>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,7 +15,6 @@
  */
 package com.zaubersoftware.gnip4j.api.model;
 
-import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
@@ -28,73 +27,70 @@ import org.codehaus.jackson.annotate.JsonAutoDetect.Visibility;
  * @since Feb 15, 2012
  */
 
-@JsonAutoDetect(getterVisibility=Visibility.PUBLIC_ONLY)
-public class Polygon implements Geometry, Iterable<Point>, Serializable {
-    
-    /**
-   * 
-   */
-  private static final long serialVersionUID = -4169471438260604146L;
-    private List<Point> points;
-    
-    
-    /**
-     * Creates the Polygon.
-     *
-     */
+@JsonAutoDetect(getterVisibility = Visibility.PUBLIC_ONLY)
+public class Polygon implements Geometry, Iterable<LinearRing> {
+    private List<LinearRing> holes;
     
     Polygon() {
     }
     
-    /**
-     * Creates the Polygon.
-     *
-     */
-    public Polygon(List<Point> points) {
-        this.points = points;
+    /** Creates the Polygon. */
+    public Polygon(final List<LinearRing> holes) {
+        this.holes = holes;
     }
     
     
-    public Polygon(Point points[]) {
-        this.points = Arrays.asList(points);
+    public Polygon(final LinearRing ...holes) {
+        this(Arrays.asList(holes));
     }
     
 
-    /** @see java.lang.Iterable#iterator() */
     @Override
-    public Iterator<Point> iterator() {
-        return this.points.iterator();
+    public final Iterator<LinearRing> iterator() {
+        return this.holes.iterator();
     }
     
     
-    /**
-     * Returns the points.
-     * 
-     * @return <code>List<Point></code> with the points.
-     */
-    public List<Point> getPoints() {
-        return points;
+    public final List<LinearRing> getHoles() {
+        return holes;
     }
 
-    /** @see com.zaubersoftware.gnip4j.api.model.Geometry#getType() */
     @Override
-    public Geometries getType() {
+    public final Geometries getType() {
         return Geometries.Polygon;
     }
     
     
-    /** @see java.lang.Object#toString() */
     @Override
-    public String toString() {
-        StringBuilder builder = new StringBuilder();
-        builder.append("[");
+    public final String toString() {
+        final StringBuilder builder = new StringBuilder();
+        builder.append('[');
         
-        for (Point p : this.points) {
-            builder.append("[ " + p.toString() + " ]");
+        for (final LinearRing p : this.holes) {
+            builder.append(p.toString());
         }
         
-        builder.append("]");
+        builder.append(']');
         
         return builder.toString();
+    }
+    
+    @Override
+    public boolean equals(final java.lang.Object obj) {
+        boolean ret = false;
+        
+        if(obj == this) {
+            ret = true;
+        } else if(obj instanceof Polygon) {
+            final Polygon p = (Polygon) obj;
+            ret = holes.equals(p.holes);
+        }
+        
+        return ret;
+    }
+    
+    @Override
+    public int hashCode() {
+        return holes.hashCode();
     }
 }

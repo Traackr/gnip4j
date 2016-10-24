@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2012 Zauber S.A. <http://www.zaubersoftware.com/>
+ * Copyright (c) 2011-2016 Zauber S.A. <http://flowics.com/>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,34 +26,14 @@ import java.io.Serializable;
  *
  */
 public final class Language implements Serializable {
-    /**
-   * 
-   */
-  private static final long serialVersionUID = -8410558197630917300L;
+    private static final long serialVersionUID = 1L;
     private String value;
 
-    /**
-     * Gets the value of the value property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
     public String getValue() {
         return value;
     }
 
-    /**
-     * Sets the value of the value property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
     public void setValue(final String value) {
         this.value = value;
     }
-
 }

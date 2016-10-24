@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2012 Zauber S.A. <http://www.zaubersoftware.com/>
+ * Copyright (c) 2011-2016 Zauber S.A. <http://flowics.com/>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -32,10 +32,7 @@ import org.codehaus.jackson.annotate.JsonProperty;
  */
 @JsonAutoDetect
 public final class UserMentions implements Serializable {
-    /**
-   * 
-   */
-  private static final long serialVersionUID = -3865945205699611486L;
+    private static final long serialVersionUID = 1L;
     private List<Integer> indices;
     @JsonProperty(value = "screen_name")
     private String screenName;

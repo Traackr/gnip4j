@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2012 Zauber S.A. <http://www.zaubersoftware.com/>
+ * Copyright (c) 2011-2016 Zauber S.A. <http://flowics.com/>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,20 +24,15 @@ package com.zaubersoftware.gnip4j.api.model;
  */
 public enum Geometries {
     
-    Point("Point"), Polygon("Polygon");
+    point("point"), Point("Point"), Polygon("Polygon");
     
     private String type;
 
-    private Geometries(String type){
+    private Geometries(final String type){
         this.type = type;
     }
     
     
-    /**
-     * Returns the type.
-     * 
-     * @return <code>String</code> with the type.
-     */
     public String getType() {
         return type;
     }

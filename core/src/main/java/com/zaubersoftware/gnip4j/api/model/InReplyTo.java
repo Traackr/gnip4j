@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2012 Zauber S.A. <http://www.zaubersoftware.com/>
+ * Copyright (c) 2011-2016 Zauber S.A. <http://flowics.com/>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,34 +25,23 @@ import java.io.Serializable;
  * <p>The following schema fragment specifies the expected content contained within this class.
  */
 public final class InReplyTo implements Serializable {
-    /**
-   * 
-   */
-  private static final long serialVersionUID = -3923655343555223839L;
+    private static final long serialVersionUID = 1;
     private String link;
+    private String type;
 
-    /**
-     * Gets the value of the link property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
     public String getLink() {
         return link;
     }
 
-    /**
-     * Sets the value of the link property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
     public void setLink(final String value) {
         this.link = value;
     }
-
+    
+    public String getType() {
+        return type;
+    }
+    
+    public void setType(final String type) {
+        this.type = type;
+    }
 }

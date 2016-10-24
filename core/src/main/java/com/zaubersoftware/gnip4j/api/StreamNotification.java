@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2012 Zauber S.A. <http://www.zaubersoftware.com/>
+ * Copyright (c) 2011-2016 Zauber S.A. <http://flowics.com/>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,7 +25,7 @@ import com.zaubersoftware.gnip4j.api.model.Activity;
  * @author Juan F. Codagnone
  * @since May 4, 2011
  */
-public interface StreamNotification {
+public interface StreamNotification<T> {
 
     /**
      * Notifies the arrival of a new {@link Activity}
@@ -33,7 +33,7 @@ public interface StreamNotification {
      * @param activity The new arrived activity.
      * @param stream The stream used to suck the activities.
      */
-    void notify(Activity activity, GnipStream stream);
+    void notify(T  activity, GnipStream stream);
     
     /**
      * Notifies a connection error.
@@ -57,4 +57,12 @@ public interface StreamNotification {
      * @param waitTime The amount of time to be waited before trying to reconnect.
      */
     void notifyReConnectionAttempt(int attempt, long waitTime);
+
+    /**
+     * Notifies that we have successfully reconnected to gnip stream.
+     * 
+     * @param attempts The number of re-connection attempts made before success.
+     * @param elapsedDisconnectedTime The elapsed ms between disconnect and successful reconnect.
+     */
+	void notifyReConnected(int attempts, long elapsedDisconnectedTime);
 }

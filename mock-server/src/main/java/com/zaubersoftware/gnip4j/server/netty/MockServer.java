@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2012 Zauber S.A. <http://www.zaubersoftware.com/>
+ * Copyright (c) 2011-2016 Zauber S.A. <http://flowics.com/>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,42 +24,43 @@ import com.zaubersoftware.gnip4j.server.GnipServerFactory;
  * 
  * Implementation of Mock Server  
  * 
- * 
  * @author Ignacio De Maio
  * @since Jan 4, 2012
  */
 public class MockServer {
 
     private static GnipServer gnipServer;
-    private final int DEFAUL_SERVER_PORT = 8080;
+
+
     private NettyChunkedInputFactory chunkedInputFactory;
+
+    private int portNumber;
    
-    /**
-     * 
-     */
-    public MockServer(){
+    public MockServer(int portNumber){
+        this.portNumber = portNumber;
     }    
     
-    void start(Integer port) {
+    void start() {
             final GnipServerFactory gnipServerFactory = new NettyGnipServerFactory();
-            gnipServer = gnipServerFactory.createServer(port, chunkedInputFactory);
+            gnipServer = gnipServerFactory.createServer(portNumber, chunkedInputFactory);
+
             gnipServer.start();
-            System.out.println("Gnip server started at port " + port);
+            System.out.println("Gnip mock server started at port " + portNumber);
     }
     
-    public void start(final InputStream activities, Integer port) {
+    public void start(final InputStream activities) {
         chunkedInputFactory = new NettyChunkedInputFactory(activities);
-        start(port);
+        start();
     }
     
-    public void startSlowly(final InputStream activities, final int timeBetweenChunks, Integer port) {
+    public void startSlowly(final InputStream activities, final int timeBetweenChunks) {
         chunkedInputFactory = new SlowNettyChunkedInputFactory(activities, timeBetweenChunks);
-        start(port);
+        start();
     }
     
-    public void startLimited(final InputStream activities, final int numberOfChunks, Integer port) {
+    public void startLimited(final InputStream activities, final int numberOfChunks) {
         chunkedInputFactory = new LimitedNettyChunkedInputFactory(activities, numberOfChunks);
-        start(port);
+        start();
     }
     
     public static void shutdown() {

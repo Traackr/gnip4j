@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2012 Zauber S.A. <http://www.zaubersoftware.com/>
+ * Copyright (c) 2011-2016 Zauber S.A. <http://flowics.com/>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,13 +27,18 @@ import java.io.Serializable;
  * this class.
  */
 public class Geo implements Serializable {
-    /**
-   * 
-   */
-  private static final long serialVersionUID = 3716718651905145760L;
     private Geometry coordinates;
     private String type;
 
+    /** Creates the Geo. */
+    public Geo() {
+    }
+
+    public Geo(final String type, final Geometry geometry) {
+        setType(type);
+        setCoordinates(geometry);
+    }
+    
     public final Geometry getCoordinates() {
         return coordinates;
     }
@@ -50,4 +55,29 @@ public class Geo implements Serializable {
         type = value;
     }
 
+    @Override
+    public String toString() {
+        return new StringBuilder()
+                .append("{\"type\": \"")
+                .append(type)
+                .append("\", \"coordinates\": ")
+                .append(coordinates)
+                .append("}")
+                .toString();
+    }
+    
+    @Override
+    public boolean equals(final java.lang.Object obj) {
+        boolean ret = false;
+        
+        if(this == obj) {
+            ret = true;
+        } else if(obj instanceof Geo) {
+            final Geo g = (Geo) obj;
+            ret = type.equals(g.type) && 
+                  coordinates.equals(g.coordinates);
+        }
+        
+        return ret;
+    }
 }

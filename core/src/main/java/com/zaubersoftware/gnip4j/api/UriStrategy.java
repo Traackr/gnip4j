@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2012 Zauber S.A. <http://www.zaubersoftware.com/>
+ * Copyright (c) 2011-2016 Zauber S.A. <http://flowics.com/>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,32 +25,18 @@ import java.net.URI;
  */
 public interface UriStrategy {
 
-  public static final String DEFAULT_STREAM_TYPE = "track";
-  public static final String DEFAULT_USERTRACK_STREAM_TYPE = "usertrack";
-    /**
-     * Generates a {@link URI} to connect against a Gnip endpoint to consume the activity stream.
-     *
-     * @param domain
-     * @param dataCollectorId
-     * @return
-     */
-    URI createStreamUri(String streamType, String account, String streamName);
+    String HTTP_DELETE = "DELETE";
+    String HTTP_POST = "POST";
 
-    /**
-     * Generates a {@link URI} to connect against a Gnip endpoint to consume the replay stream.
-     *
-     * @param domain
-     * @param dataCollectorId
-     * @return
-     */
-    URI createReplayUri(String streamType, String account, String streamName);
-    
-    /**
-     * Generates a {@link URI} to connect against a Gnip endpoint to get/modify rules.
-     *
-     * @param domain
-     * @param dataCollectorId
-     * @return
-     */
-    URI createRulesUri(String streamType, String account, String streamName);
+	/** Generates a {@link URI} to connect against a Gnip endpoint to consume the activity stream. */
+    URI createStreamUri(String account, String streamName);
+
+    /** Generates a {@link URI} to connect against a Gnip endpoint to get/modify rules. */
+    URI createRulesUri(String account, String streamName);
+
+    /** Generates a {@link URI} to connect against a Gnip endpoint to delete rules. */
+	URI createRulesDeleteUri(String account, String streamName);
+
+	/** Informs the {@link GnipFacade} which http verb/method to use for rule deletion. Powertrack V2 API uses POST. V1 uses DELETE. */
+	String getHttpMethodForRulesDelete();
 }

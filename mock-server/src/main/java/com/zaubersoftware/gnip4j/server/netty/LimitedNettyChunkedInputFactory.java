@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2012 Zauber S.A. <http://www.zaubersoftware.com/>
+ * Copyright (c) 2011-2016 Zauber S.A. <http://flowics.com/>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -33,7 +33,7 @@ public final class LimitedNettyChunkedInputFactory extends NettyChunkedInputFact
      * 
      * Creates the NettyHandlerAggregator.
      * @param limitedActivities
-     * @param timesToStart the times that the mock server will start and shutdown client's connections.
+     * @param numberOfChunks
      */
     public LimitedNettyChunkedInputFactory(final InputStream limitedActivities,
             final int numberOfChunks) {

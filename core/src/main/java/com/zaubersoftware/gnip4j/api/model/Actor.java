@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2012 Zauber S.A. <http://www.zaubersoftware.com/>
+ * Copyright (c) 2011-2016 Zauber S.A. <http://flowics.com/>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,49 +18,45 @@ package com.zaubersoftware.gnip4j.api.model;
 import java.io.Serializable;
 import java.math.BigInteger;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.xml.datatype.XMLGregorianCalendar;
 
 
 /**
- * <p>Java class for anonymous complex type.
- *
- * <p>The following schema fragment specifies the expected content contained within this class.
- *
+ * An actor  
+ * 
+ * @author Juan F. Codagnone
+ * @since Apr 19, 2013
  */
 public final class Actor implements Serializable {
-    
-    /**
-   * 
-   */
-  private static final long serialVersionUID = -1117760746790148226L;
+    private static final long serialVersionUID = 1;
     private Actor.Location location;
     private List<String> languages;
     private List<Links> links;
-    private XMLGregorianCalendar postedTime;
+    private Date postedTime;
     private String displayName;
     private String preferredUsername;
-    private int utcOffset;
+    private Integer utcOffset;
     private String objectType;
     private int statusesCount;
     private BigInteger listedCount;
     private String twitterTimeZone;
     private BigInteger friendsCount;
     private BigInteger followersCount;
+    private Integer favoritesCount;
     private String summary;
     private String link;
     private String image;
     private String id;
-
-    /**
-     * Gets the value of the location property.
-     *
-     * @return
-     *     possible object is
-     *     {@link Actor.Location }
-     *
-     */
+    private boolean verified;
+    
+    // wordpress activity
+    // An md5 hash of the person's email.  
+    // This value can be used to get the person's gravatar. (http://www.gravatar.com/avatar/<md5>)
+    private String wpEmailMd5;
+    
     public Actor.Location getLocation() {
         return location;
     }
@@ -73,14 +69,6 @@ public final class Actor implements Serializable {
         this.twitterTimeZone = twitterTimeZone;
     }
 
-    /**
-     * Sets the value of the location property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link Actor.Location }
-     *
-     */
     public void setLocation(final Actor.Location value) {
         location = value;
     }
@@ -151,369 +139,157 @@ public final class Actor implements Serializable {
      *     {@link XMLGregorianCalendar }
      *
      */
-    public XMLGregorianCalendar getPostedTime() {
+    public Date getPostedTime() {
         return postedTime;
     }
 
-    /**
-     * Sets the value of the postedTime property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link XMLGregorianCalendar }
-     *
-     */
-    public void setPostedTime(final XMLGregorianCalendar value) {
+    public void setPostedTime(final Date value) {
         postedTime = value;
     }
 
-    /**
-     * Gets the value of the displayName property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
     public String getDisplayName() {
         return displayName;
     }
 
-    /**
-     * Sets the value of the displayName property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
     public void setDisplayName(final String value) {
         displayName = value;
     }
 
-    /**
-     * Gets the value of the preferredUsername property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
     public String getPreferredUsername() {
         return preferredUsername;
     }
 
-    /**
-     * Sets the value of the preferredUsername property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
     public void setPreferredUsername(final String value) {
         preferredUsername = value;
     }
 
-    /**
-     * Gets the value of the utcOffset property.
-     *
-     */
-    public int getUtcOffset() {
+    public Integer getUtcOffset() {
         return utcOffset;
     }
 
-    /**
-     * Sets the value of the utcOffset property.
-     *
-     */
-    public void setUtcOffset(final int value) {
+    public void setUtcOffset(final Integer value) {
         utcOffset = value;
     }
 
-    /**
-     * Gets the value of the objectType property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
     public String getObjectType() {
         return objectType;
     }
 
-    /**
-     * Sets the value of the objectType property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
     public void setObjectType(final String value) {
         objectType = value;
     }
 
-    /**
-     * Gets the value of the statusesCount property.
-     *
-     */
     public int getStatusesCount() {
         return statusesCount;
     }
 
-    /**
-     * Sets the value of the statusesCount property.
-     *
-     */
     public void setStatusesCount(final int value) {
         statusesCount = value;
     }
 
-    /**
-     * Gets the value of the listedCount property.
-     *
-     * @return
-     *     possible object is
-     *     {@link BigInteger }
-     *
-     */
     public BigInteger getListedCount() {
         return listedCount;
     }
 
-    /**
-     * Sets the value of the listedCount property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link BigInteger }
-     *
-     */
     public void setListedCount(final BigInteger value) {
         listedCount = value;
     }
 
-    /**
-     * Gets the value of the friendsCount property.
-     *
-     * @return
-     *     possible object is
-     *     {@link BigInteger }
-     *
-     */
     public BigInteger getFriendsCount() {
         return friendsCount;
     }
 
-    /**
-     * Sets the value of the friendsCount property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link BigInteger }
-     *
-     */
     public void setFriendsCount(final BigInteger value) {
         friendsCount = value;
     }
 
-    /**
-     * Gets the value of the followersCount property.
-     *
-     * @return
-     *     possible object is
-     *     {@link BigInteger }
-     *
-     */
     public BigInteger getFollowersCount() {
         return followersCount;
     }
 
-    /**
-     * Sets the value of the followersCount property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link BigInteger }
-     *
-     */
     public void setFollowersCount(final BigInteger value) {
         followersCount = value;
     }
+    
+    public Integer getFavoritesCount() {
+        return favoritesCount;
+    }
 
-    /**
-     * Gets the value of the summary property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
+    public void setFavoritesCount(final Integer favoritesCount) {
+        this.favoritesCount = favoritesCount;
+    }
+
     public String getSummary() {
         return summary;
     }
 
-    /**
-     * Sets the value of the summary property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
     public void setSummary(final String value) {
         summary = value;
     }
 
-    /**
-     * Gets the value of the link property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
     public String getLink() {
         return link;
     }
 
-    /**
-     * Sets the value of the link property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
     public void setLink(final String value) {
         link = value;
     }
 
-    /**
-     * Gets the value of the image property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
     public String getImage() {
         return image;
     }
 
-    /**
-     * Sets the value of the image property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
     public void setImage(final String value) {
         image = value;
     }
 
-    /**
-     * Gets the value of the id property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
+    
+    public String getWpEmailMd5() {
+        return wpEmailMd5;
+    }
+
+    public void setWpEmailMd5(final String wpEmailMd5) {
+        this.wpEmailMd5 = wpEmailMd5;
+    }
+
     public String getId() {
         return id;
     }
 
-    /**
-     * Sets the value of the id property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
+    
     public void setId(final String value) {
         id = value;
     }
 
+    public boolean isVerified() {
+        return verified;
+    }
+    
+    public void setVerified(final boolean verified) {
+        this.verified = verified;
+    }
 
-    /**
-     * <p>Java class for anonymous complex type.
-     *
-     * <p>The following schema fragment specifies the expected content contained within this class.
-     *
-     * <pre>
-     * &lt;complexType>
-     *   &lt;complexContent>
-     *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
-     *       &lt;attribute name="displayName" use="required" type="{http://www.w3.org/2001/XMLSchema}string" />
-     *       &lt;attribute name="objectType" use="required" type="{http://www.w3.org/2001/XMLSchema}string" />
-     *     &lt;/restriction>
-     *   &lt;/complexContent>
-     * &lt;/complexType>
-     * </pre>
-     *
-     *
-     */
-    public static final class Location  implements Serializable{
-        /**
-       * 
-       */
-      private static final long serialVersionUID = -2010823433293892892L;
+    public static final class Location implements Serializable {
+        
         private String displayName;
         private String objectType;
 
-        /**
-         * Gets the value of the displayName property.
-         *
-         * @return
-         *     possible object is
-         *     {@link String }
-         *
-         */
         public String getDisplayName() {
             return displayName;
         }
 
-        /**
-         * Sets the value of the displayName property.
-         *
-         * @param value
-         *     allowed object is
-         *     {@link String }
-         *
-         */
         public void setDisplayName(final String value) {
             displayName = value;
         }
 
-        /**
-         * Gets the value of the objectType property.
-         *
-         * @return
-         *     possible object is
-         *     {@link String }
-         *
-         */
         public String getObjectType() {
             return objectType;
         }
 
-        /**
-         * Sets the value of the objectType property.
-         *
-         * @param value
-         *     allowed object is
-         *     {@link String }
-         *
-         */
         public void setObjectType(final String value) {
             objectType = value;
         }
-
     }
-
+    
+    
 }

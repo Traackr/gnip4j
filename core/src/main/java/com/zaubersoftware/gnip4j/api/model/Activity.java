@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2012 Zauber S.A. <http://www.zaubersoftware.com/>
+ * Copyright (c) 2011-2016 Zauber S.A. <http://flowics.com/>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,19 +16,17 @@
 package com.zaubersoftware.gnip4j.api.model;
 
 import java.io.Serializable;
-import java.math.BigInteger;
-
-import javax.xml.datatype.XMLGregorianCalendar;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 import org.codehaus.jackson.annotate.JsonAutoDetect;
 import org.codehaus.jackson.annotate.JsonProperty;
 
 @JsonAutoDetect
-public class Activity  implements Serializable {
-    /**
-   * 
-   */
-  private static final long serialVersionUID = 4054519118171835382L;
+public class Activity implements Serializable {
+    private static final long serialVersionUID = -6613328643160393766L;
+    
     private InReplyTo inReplyTo;
     private Activity.Location location;
     private Actor actor;
@@ -38,15 +36,43 @@ public class Activity  implements Serializable {
     private Provider provider;
     @JsonProperty(value = "twitter_entities")
     private TwitterEntities twitterEntities;
+    @JsonProperty(value = "twitter_extended_entities")
+    private TwitterEntities twitterExtendedEntities;
+    private long retweetCount;
+    private int favoritesCount;
+    @JsonProperty(value = "twitter_filter_level")
+    private String twitterFilterLevel;
+    @JsonProperty(value = "twitter_lang")
+    private String twitterLang;
+    
     private Gnip gnip;
     private String verb;
-    private XMLGregorianCalendar postedTime;
+    private Date postedTime;
+    private Date created;
+    private Date updated;
     private String body;
     private String objectType;
     private String id;
     private String link;
-    private BigInteger retweetCount;
-
+    private Source source;
+    private List<Category> categories;
+    private List<Links> links;
+    private String summary;
+    private Author author;
+    private String content;
+    private String subtitle;
+    private String title;
+    private Object target;
+    private String caption;
+    private String comment;
+    @JsonProperty(value = "twitter_quoted_status")
+    private Activity twitterQuotedStatus;
+    
+    @JsonProperty(value = "display_text_range")
+    int [] displayTextRange;
+    @JsonProperty(value = "long_object")
+    Object longObject;
+    
     public final InReplyTo getInReplyTo() {
         return inReplyTo;
     }
@@ -111,7 +137,18 @@ public class Activity  implements Serializable {
         twitterEntities = value;
     }
 
+    public TwitterEntities getTwitterExtendedEntities() {
+        return twitterExtendedEntities;
+    }
+
+    public void setTwitterExtendedEntities(final TwitterEntities twitterExtendedEntities) {
+        this.twitterExtendedEntities = twitterExtendedEntities;
+    }
+
     public final Gnip getGnip() {
+        if(gnip == null) {
+            gnip = new Gnip();
+        }
         return gnip;
     }
 
@@ -128,12 +165,12 @@ public class Activity  implements Serializable {
     }
 
 
-    public final XMLGregorianCalendar getPostedTime() {
+    public final Date getPostedTime() {
         return postedTime;
     }
 
 
-    public final void setPostedTime(final XMLGregorianCalendar value) {
+    public final void setPostedTime(final Date value) {
         postedTime = value;
     }
 
@@ -170,28 +207,95 @@ public class Activity  implements Serializable {
         link = value;
     }
 
+    public Activity getTwitterQuotedStatus() {
+        return twitterQuotedStatus;
+    }
+    
+    public void setTwitterQuotedStatus(final Activity twitterQuotedStatus) {
+        this.twitterQuotedStatus = twitterQuotedStatus;
+    }
+    
+    public void setDisplayTextRange(final int[] displayTextRange) {
+        this.displayTextRange = displayTextRange;
+    }
+    
+    public int[] getDisplayTextRange() {
+        return displayTextRange;
+    }
+    
+    public void setLongObject(final Object longObject) {
+        this.longObject = longObject;
+    }
+    
+    public Object getLongObject() {
+        return longObject;
+    }
     
     /**
-     * <p>
-     * Java class for anonymous complex type.
-     * 
-     * <p>
-     * The following schema fragment specifies the expected content contained
-     * within this class.
+     * https://dev.twitter.com/overview/api/places representation for gnip.
      */
     public static class Location implements Serializable {
+        public static final String TW_TYPE_COUNTRY="country";
+        public static final String TW_TYPE_ADMIN="admin";
+        public static final String TW_TYPE_CITY="city";
+        public static final String TW_TYPE_NEIGHBORHOOD="neighborhood";
+        public static final String TW_TYPE_POI="poi";
+
+        private static final long serialVersionUID = 1L;
         /**
-       * 
-       */
-      private static final long serialVersionUID = 8768458329148991322L;
+         * A series of longitude and latitude points, defining a box which will
+         * contain the Place entity this bounding box is related to. Each point
+         * is an array in the form of [longitude, latitude]. Points are grouped
+         * into an array per bounding box. Bounding box arrays are wrapped in
+         * one additional array to be compatible with the polygon notation.
+         */
         private Geo geo;
+        
+        /**
+         * Name of the country containing this place. Example:
+         * In Twitter Raw: "country":"France"
+         */
+        @JsonProperty("country_code")
         private String countryCode;
+        
+        /**
+         * Full human-readable representation of the place’s name.
+         * In Twitter Raw: "full_name":"San Francisco, CA"
+         */
         private String displayName;
+        
+        /**
+         * "objectType": "place"
+         */
         private String objectType;
-        private String streetAddress;
+        
+        /**
+         * URL representing the location of additional place metadata for this place.
+         * 
+         * In Twitter Raw: "url":"https://api.twitter.com/1.1/geo/id/7238f93a3e899af6.json"
+         */
         private String link;
 
+        /**
+         * Short human-readable representation of the place’s name.
+         * In Twitter Raw: "name":"Paris"
+         */
+        private String name;
+        @JsonProperty("twitter_country_code")
+
+        /**
+         * Shortened country code representing the country containing this place.
+         * In Twitter Raw: "country_code":"FR"
+         */
+        private String twitterCountryCode;
         
+        /**
+         * The type of location represented by this place.
+         * In Twitter Raw: "place_type":"city"
+         */
+        @JsonProperty("twitter_place_type")
+        private String twitterPlaceType;
+
         public final Geo getGeo() {
             return geo;
         }
@@ -201,12 +305,6 @@ public class Activity  implements Serializable {
             geo = value;
         }
 
-        /**
-         * Gets the value of the countryCode property.
-         * 
-         * @return possible object is {@link String }
-         * 
-         */
         public final String getCountryCode() {
             return countryCode;
         }
@@ -231,14 +329,6 @@ public class Activity  implements Serializable {
             objectType = value;
         }
 
-        public final String getStreetAddress() {
-            return streetAddress;
-        }
-
-        public final void setStreetAddress(final String value) {
-            streetAddress = value;
-        }
-
         public final String getLink() {
             return link;
         }
@@ -246,15 +336,177 @@ public class Activity  implements Serializable {
         public final void setLink(final String value) {
             link = value;
         }
+
+
+        public final String getName() {
+            return name;
+        }
+
+
+        public final void setName(final String name) {
+            this.name = name;
+        }
+
+
+        public final String getTwitterCountryCode() {
+            return twitterCountryCode;
+        }
+
+
+        public final void setTwitterCountryCode(final String twitterCountryCode) {
+            this.twitterCountryCode = twitterCountryCode;
+        }
+
+
+        public final String getTwitterPlaceType() {
+            return twitterPlaceType;
+        }
+
+
+        public final void setTwitterPlaceType(final String twitterPlaceType) {
+            this.twitterPlaceType = twitterPlaceType;
+        }
+        
+        
     }
 
+    public final void setSource(final Source value) {
+        source = value;
+    }
+    
+    public final Source getSource() {
+        return source;
+    }
+    
+    public final Date getCreated() {
+        return created;
+    }
+    
+    public final void setCreated(final Date created) {
+        this.created = created;
+    }
+    
 
-    public BigInteger getRetweetCount() {
-      return retweetCount;
+    public final Date getUpdated() {
+        return updated;
+    }
+    
+    public final void setUpdated(final Date updated) {
+        this.updated = updated;
+    }
+    
+    /** get the categories */
+    public final List<Category> getCategoriesRules() {
+        if (categories == null) {
+            categories = new ArrayList<Category>();
+        }
+        return categories;
+    }
+    
+    public final List<Links> getLinks() {
+        if (links == null) {
+            links = new ArrayList<Links>();
+        }
+        return links;
+    }
+    
+    public void setLinks(final List<Links> links) {
+        this.links = links;
+    }
+    
+    public final String getSummary() {
+        return summary;
     }
 
-    public void setRetweetCount(BigInteger retweetCount) {
-      this.retweetCount = retweetCount;
+    public final void setSummary(final String value) {
+        summary = value;
     }
 
+    public final Author getAuthor() {
+        return author;
+    }
+    
+    public final void setAuthor(final Author author) {
+        this.author = author;
+    }
+
+    public final String getContent() {
+        return content;
+    }
+    
+    public final void setContent(final String content) {
+        this.content = content;
+    }
+    
+    public final String getSubtitle() {
+        return subtitle;
+    }
+    
+    public final void setSubtitle(final String subtitle) {
+        this.subtitle = subtitle;
+    }
+
+    public final void setTitle(final String text) {
+        title = text;
+    }
+    
+    public final String getTitle() {
+        return title;
+    }
+    
+    public final long getRetweetCount() {
+        return retweetCount;
+    }
+
+    public final void setRetweetCount(final long retweetCount) {
+        this.retweetCount = retweetCount;
+    }
+    
+    public long getFavoritesCount() {
+        return favoritesCount;
+    }
+
+    public void setFavoritesCount(final int favoritesCount) {
+        this.favoritesCount = favoritesCount;
+    }
+
+    public String getTwitterFilterLevel() {
+        return twitterFilterLevel;
+    }
+
+    public void setTwitterFilterLevel(final String twitterFilterLevel) {
+        this.twitterFilterLevel = twitterFilterLevel;
+    }
+
+    public String getTwitterLang() {
+        return twitterLang;
+    }
+
+    public void setTwitterLang(final String twitterLang) {
+        this.twitterLang = twitterLang;
+    }
+    
+    public final Object getTarget() {
+        return target;
+    }
+
+    public final void setTarget(final Object target) {
+        this.target = target;
+    }
+    
+    public final String getCaption() {
+        return this.caption;
+    }
+    
+    public void setCaption(final String caption) {
+        this.caption = caption;
+    }
+    
+    public String getComment() {
+        return comment;
+    }
+    
+    public void setComment(final String comment) {
+        this.comment = comment;
+    }
 }

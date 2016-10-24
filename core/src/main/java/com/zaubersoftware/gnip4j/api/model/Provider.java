@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2012 Zauber S.A. <http://www.zaubersoftware.com/>
+ * Copyright (c) 2011-2016 Zauber S.A. <http://flowics.com/>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,84 +26,41 @@ import java.io.Serializable;
  *
  */
 public final class Provider implements Serializable {
-    /**
-   * 
-   */
-  private static final long serialVersionUID = -8361818872455060851L;
+    private static final long serialVersionUID = 1L;
     private String displayName;
     private String objectType;
     private String link;
+    private String icon;
 
-    /**
-     * Gets the value of the displayName property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
     public String getDisplayName() {
         return displayName;
     }
 
-    /**
-     * Sets the value of the displayName property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
     public void setDisplayName(final String value) {
         displayName = value;
     }
 
-    /**
-     * Gets the value of the objectType property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
     public String getObjectType() {
         return objectType;
     }
 
-    /**
-     * Sets the value of the objectType property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
     public void setObjectType(final String value) {
         objectType = value;
     }
 
-    /**
-     * Gets the value of the link property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
     public String getLink() {
         return link;
     }
 
-    /**
-     * Sets the value of the link property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
     public void setLink(final String value) {
         link = value;
     }
 
+    public String getIcon() {
+        return icon;
+    }
+    
+    public void setIcon(final String icon) {
+        this.icon = icon;
+    }
 }

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2012 Zauber S.A. <http://www.zaubersoftware.com/>
+ * Copyright (c) 2011-2016 Zauber S.A. <http://flowics.com/>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,59 +26,32 @@ import java.io.Serializable;
  *
  */
 public final class Links implements Serializable {
-    /**
-   * 
-   */
-  private static final long serialVersionUID = -1274435856051254835L;
+    private static final long serialVersionUID = 1L;
     private String href;
     private String rel;
+    private String type;
 
-    /**
-     * Gets the value of the href property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
     public String getHref() {
         return href;
     }
 
-    /**
-     * Sets the value of the href property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
     public void setHref(final String value) {
         href = value;
     }
 
-    /**
-     * Gets the value of the rel property.
-     *
-     * @return
-     *     possible object is
-     *     {@link String }
-     *
-     */
     public String getRel() {
         return rel;
     }
 
-    /**
-     * Sets the value of the rel property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *
-     */
     public void setRel(final String value) {
         rel = value;
     }
 
+    public String getType() {
+        return type;
+    }
+
+    public void setType(final String type) {
+        this.type = type;
+    }
 }

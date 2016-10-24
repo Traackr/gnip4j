@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2012 Zauber S.A. <http://www.zaubersoftware.com/>
+ * Copyright (c) 2011-2016 Zauber S.A. <http://flowics.com/>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -49,7 +49,7 @@ public final class ActivityNetworkExceptionInputStream extends FilterInputStream
         if(bytesBefore <= 0) {
             throw new IOException("mock connection closed");
         }
-        int ret = super.read(b, off, len);
+        final int ret = super.read(b, off, len);
         bytesBefore -= ret;
         return ret;
     }

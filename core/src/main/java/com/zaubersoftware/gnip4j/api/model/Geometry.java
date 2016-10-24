@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2012 Zauber S.A. <http://www.zaubersoftware.com/>
+ * Copyright (c) 2011-2016 Zauber S.A. <http://flowics.com/>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,8 @@
  */
 package com.zaubersoftware.gnip4j.api.model;
 
+import java.io.Serializable;
+
 /**
  * TODO Descripcion de la clase. Los comentarios van en castellano.
  * 
@@ -22,7 +24,7 @@ package com.zaubersoftware.gnip4j.api.model;
  * @author Martin Silva
  * @since Feb 15, 2012
  */
-public interface Geometry {
+public interface Geometry extends Serializable {
     
     
     Geometries getType();

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2012 Zauber S.A. <http://www.zaubersoftware.com/>
+ * Copyright (c) 2011-2016 Zauber S.A. <http://flowics.com/>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +17,7 @@ package com.zaubersoftware.gnip4j.api.model;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.codehaus.jackson.annotate.JsonAutoDetect;
@@ -29,11 +30,20 @@ import org.codehaus.jackson.annotate.JsonAutoDetect;
  */
 @JsonAutoDetect
 public final class Rules implements Serializable {
-    /**
-   * 
-   */
-  private static final long serialVersionUID = -2809808211903076951L;
+    private static final long serialVersionUID = 1L;
     private List<Rule> rules;
+
+    public Rules() {
+        // serialization
+    }
+    
+    public Rules(final Rule ...rules) {
+        this(Arrays.asList(rules));
+    }
+    
+    public Rules(final List<Rule> rules) {
+        this.rules = rules;
+    }
 
     /**
      * Gets the value of the rule property.
@@ -64,4 +74,8 @@ public final class Rules implements Serializable {
         return rules;
     }
 
+    @Override
+    public String toString() {
+        return getRules().toString();
+    }
 }

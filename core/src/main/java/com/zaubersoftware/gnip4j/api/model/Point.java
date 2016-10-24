@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2012 Zauber S.A. <http://www.zaubersoftware.com/>
+ * Copyright (c) 2011-2016 Zauber S.A. <http://flowics.com/>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,86 +15,74 @@
  */
 package com.zaubersoftware.gnip4j.api.model;
 
-import java.io.Serializable;
-
 import org.codehaus.jackson.annotate.JsonAutoDetect;
 import org.codehaus.jackson.annotate.JsonAutoDetect.Visibility;
 
 /**
- * TODO Descripcion de la clase. Los comentarios van en castellano.
- * 
- * 
+ * Point
+ *
  * @author Martin Silva
  * @since Feb 15, 2012
  */
+@JsonAutoDetect(getterVisibility = Visibility.PUBLIC_ONLY)
+public class Point implements Geometry {
 
-@JsonAutoDetect(getterVisibility=Visibility.PUBLIC_ONLY)
-public class Point implements Geometry, Serializable{
-    
-    /**
-   * 
-   */
-  private static final long serialVersionUID = 5482676484274730718L;
-
-
-
-    /**
-     * Creates the Point.
-     *
-     */
+    /** Creates the Point.*/
     @SuppressWarnings("unused")
     private Point() {
     }
-    
-    /**
-     * Creates the Point.
-     *
-     * @param latitude
-     * @param longitude
-     */
-    public Point(double latitude, double longitude) {
+
+    public Point(final double latitude, final double longitude) {
         super();
         this.latitude = latitude;
         this.longitude = longitude;
     }
 
-
-
-
     private double latitude;
     private double longitude;
-    
-    
-    
-    /**
-     * Returns the latitude.
-     * 
-     * @return <code>double</code> with the latitude.
-     */
+
     public double getLatitude() {
         return latitude;
     }
-    
-    
-    /**
-     * Returns the longitude.
-     * 
-     * @return <code>double</code> with the longitude.
-     */
+
     public double getLongitude() {
         return longitude;
     }
 
-    /** @see com.zaubersoftware.gnip4j.api.model.Geometry#getType() */
     @Override
     public Geometries getType() {
         return Geometries.Point;
     }
-    
-    
-    /** @see java.lang.Object#toString() */
+
     @Override
     public String toString() {
         return "lat: " + latitude + " lon: " + longitude;
+    }
+    
+    @Override
+    public boolean equals(final java.lang.Object obj) {
+        boolean ret = false;
+        
+        if(this == obj) {
+            ret = true;
+        } else if(obj instanceof Point) {
+            final Point p = (Point) obj;
+            ret = Double.doubleToLongBits(latitude) == Double.doubleToLongBits(p.latitude) &&
+                  Double.doubleToLongBits(longitude) == Double.doubleToLongBits(p.longitude);
+        }
+        
+        return ret;
+    }
+    
+    @Override
+    public int hashCode() {
+        long value = Double.doubleToLongBits(latitude);
+        final int iConstant = 37;
+        int iTotal = ((int) (value ^ (value >> 32)));
+        
+        value = Double.doubleToLongBits(longitude);
+        iTotal = iTotal * iConstant + ((int) (value ^ (value >> 32)));
+        
+        return iTotal;
     }
 }

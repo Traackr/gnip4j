@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2012 Zauber S.A. <http://www.zaubersoftware.com/>
+ * Copyright (c) 2011-2016 Zauber S.A. <http://flowics.com/>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -29,68 +29,38 @@ import org.codehaus.jackson.annotate.JsonProperty;
  *
  */
 public class Gnip implements Serializable {
-    /**
-   * 
-   */
-  private static final long serialVersionUID = 5846301755833389640L;
+    private static final long serialVersionUID = -928243859838308139L;
+    
     private Language language;
     @JsonProperty(value = "matching_rules")
     private List<MatchingRules> matchingRules;
     private List<Url> urls;
     @JsonProperty(value = "klout_score")
     private Float kloutScore;
-
-    /**
-     * Gets the value of the language property.
-     *
-     * @return
-     *     possible object is
-     *     {@link Language }
-     *
-     */
+    @JsonProperty(value = "favorite_count")
+    private Long favoriteCount;
+    @JsonProperty(value = "profileLocations")
+    private List<Location> profileLocations;
+    
     public final Language getLanguage() {
         return language;
     }
 
-    /**
-     * Sets the value of the language property.
-     *
-     * @param value
-     *     allowed object is
-     *     {@link Language }
-     *
-     */
     public final void setLanguage(final Language value) {
         language = value;
     }
 
-    /**
-     * Gets the value of the matchingRules property.
-     *
-     * <p>
-     * This accessor method returns a reference to the live list,
-     * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the matchingRules property.
-     *
-     * <p>
-     * For example, to add a new item, do as follows:
-     * <pre>
-     *    getMatchingRules().add(newItem);
-     * </pre>
-     *
-     *
-     * <p>
-     * Objects of the following type(s) are allowed in the list
-     * {@link MatchingRules }
-     *
-     *
-     */
+    /** Gets the value of the matchingRules property.*/
+    @JsonProperty(value = "matching_rules")
     public final List<MatchingRules> getMatchingRules() {
         if (matchingRules == null) {
             matchingRules = new ArrayList<MatchingRules>();
         }
         return matchingRules;
+    }
+
+    public void setMatchingRules(final List<MatchingRules> matchingRules) {
+        this.matchingRules = matchingRules;
     }
 
     public final List<Url> getUrls() {
@@ -99,8 +69,32 @@ public class Gnip implements Serializable {
         }
         return urls;
     }
+
+    public void setUrls(final List<Url> urls) {
+        this.urls = urls;
+    }
     
     public final Float getKloutScore() {
     	return kloutScore;
     }
+
+    public void setKloutScore(final Float kloutScore) {
+        this.kloutScore = kloutScore;
+    }
+    
+    public final Long getFavoriteCount() {
+        return favoriteCount;
+    }
+    
+    public final void setFavoriteCount(final Long favoriteCount) {
+        this.favoriteCount = favoriteCount;
+    }
+
+    public List<Location> getProfileLocations() {
+        if (profileLocations == null) {
+            profileLocations = new ArrayList<Location>();
+        }
+        return profileLocations;
+    }
+
 }

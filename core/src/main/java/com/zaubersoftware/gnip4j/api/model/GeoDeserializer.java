@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2012 Zauber S.A. <http://www.zaubersoftware.com/>
+ * Copyright (c) 2011-2016 Zauber S.A. <http://flowics.com/>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,78 +21,78 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.codehaus.jackson.JsonNode;
-import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.JsonParser;
 import org.codehaus.jackson.JsonProcessingException;
 import org.codehaus.jackson.map.DeserializationContext;
 import org.codehaus.jackson.map.deser.StdDeserializer;
-import org.codehaus.jackson.node.ArrayNode;
 
 /**
- * TODO Descripcion de la clase. Los comentarios van en castellano.
- * 
- * 
+ * Geo Deserializer
+ *
+ *
  * @author Martin Silva
  * @since Feb 15, 2012
  */
 public class GeoDeserializer extends StdDeserializer<Geo> {
 
-    /**
-     * Creates the GeoDeserializer.
-     *
-     * @param vc
-     */
-    public GeoDeserializer(Class<Geo> clazz) {
+    /** Creates the GeoDeserializer. */
+    public GeoDeserializer(final Class<Geo> clazz) {
         super(clazz);
     }
 
-    /** @see org.codehaus.jackson.map.JsonDeserializer#deserialize(org.codehaus.jackson.JsonParser, org.codehaus.jackson.map.DeserializationContext) */
     @Override
-    public Geo deserialize(JsonParser jp, DeserializationContext ctxt) throws IOException, JsonProcessingException {
-        JsonNode tree = jp.readValueAsTree();
-        
-        JsonNode coordinates = tree.findValue("coordinates");
-        JsonNode type = tree.findValue("type");
-        
-        
-        Geo geo = new Geo();
+    public Geo deserialize(final JsonParser jp, final DeserializationContext ctxt) throws IOException,
+            JsonProcessingException {
+        final JsonNode tree = jp.readValueAsTree();
+
+        final JsonNode coordinates = tree.get("coordinates");
+        final JsonNode type = tree.get("type");
+
+
+        final Geo geo = new Geo();
         geo.setType(type.getTextValue());
-        
-        if(Geometries.valueOf(type.getTextValue()) == Geometries.Polygon){
-            geo.setCoordinates(this.createPolygon(coordinates));
+
+        if(Geometries.Polygon.equals(Geometries.valueOf(type.getTextValue()))) {
+            geo.setCoordinates(createPolygon(coordinates));
+        } else {
+            geo.setCoordinates(createPoint(coordinates));
         }
-        else{
-            geo.setCoordinates(this.createPoint(coordinates));
-        }
-        
+
         return geo;
     }
 
-    /**
-     * @param coordinates
-     * @return
-     * @throws IOException 
-     * @throws JsonParseException 
-     */
-    private Geometry createPoint(JsonNode coordinates) throws JsonParseException, IOException {
-        return new Point(coordinates.get(0).getDoubleValue(), coordinates.get(1).getDoubleValue());
+    /** @return a point */
+    private Point createPoint(final JsonNode coordinates) throws IOException {
+        final Point ret;
+        if(coordinates.isArray()) {
+            ret = new Point(coordinates.get(0).getDoubleValue(), coordinates.get(1).getDoubleValue());
+        } else {
+            ret = null;
+        }
+        return ret;
     }
 
-    /**
-     * @param coordinates
-     * @return
-     */
-    private Geometry createPolygon(JsonNode coordinates) {
-        JsonNode values = (ArrayNode)coordinates.get(0);
-        Iterator<JsonNode> elements = values.getElements();
+    /** @return a polygon */
+    private Polygon createPolygon(final JsonNode linearrings) throws IOException {
+        final List<LinearRing> linearRings = new ArrayList<LinearRing>(linearrings.size());
         
-        List<Point> points = new ArrayList<Point>();
-        while(elements.hasNext()){
-            JsonNode next = elements.next();
-            points.add(new Point(next.get(0).getDoubleValue(), next.get(1).getDoubleValue()));
+        for(final Iterator<JsonNode> it = linearrings.getElements(); it.hasNext() ; ) {
+            final JsonNode linearRingNode = it.next();
+            linearRings.add(parseLinearRing(linearRingNode));
+                
         }
-        
-        return new Polygon(points);
+
+        return new Polygon(linearRings);
     }
-    
+
+    private LinearRing parseLinearRing(final JsonNode linearRingNode) throws IOException {
+        final List<Point> points = new ArrayList<Point>(linearRingNode.size());
+        for(final Iterator<JsonNode> it = linearRingNode.getElements(); it.hasNext() ; ) {
+            final JsonNode next = it.next();
+            points.add(createPoint(next));
+        }
+        return new LinearRing(points);
+        
+    }
+
 }

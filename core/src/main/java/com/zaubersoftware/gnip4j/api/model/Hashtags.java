@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2012 Zauber S.A. <http://www.zaubersoftware.com/>
+ * Copyright (c) 2011-2016 Zauber S.A. <http://flowics.com/>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,35 +26,9 @@ import java.util.List;
  * <p>The following schema fragment specifies the expected content contained within this class.
  */
 public final class Hashtags implements Serializable {
-    /**
-   * 
-   */
-  private static final long serialVersionUID = 86716997216140369L;
     private List<Integer> indices;
     private String text;
 
-    /**
-     * Gets the value of the indices property.
-     * 
-     * <p>
-     * This accessor method returns a reference to the live list,
-     * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the indices property.
-     * 
-     * <p>
-     * For example, to add a new item, do as follows:
-     * <pre>
-     *    getIndices().add(newItem);
-     * </pre>
-     * 
-     * 
-     * <p>
-     * Objects of the following type(s) are allowed in the list
-     * {@link Integer }
-     * 
-     * 
-     */
     public List<Integer> getIndices() {
         if (indices == null) {
             indices = new ArrayList<Integer>();
@@ -62,27 +36,11 @@ public final class Hashtags implements Serializable {
         return this.indices;
     }
 
-    /**
-     * Gets the value of the text property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
     public String getText() {
         return text;
     }
 
-    /**
-     * Sets the value of the text property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setText(String value) {
+    public void setText(final String value) {
         this.text = value;
     }
 

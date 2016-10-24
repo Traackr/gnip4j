@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2012 Zauber S.A. <http://www.zaubersoftware.com/>
+ * Copyright (c) 2011-2016 Zauber S.A. <http://flowics.com/>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,19 +15,23 @@
  */
 package com.zaubersoftware.gnip4j.http;
 
-import static com.zaubersoftware.gnip4j.api.impl.ErrorCodes.*;
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
-
-import java.util.concurrent.ExecutorService;
-
-import org.junit.Test;
+import static com.zaubersoftware.gnip4j.api.impl.ErrorCodes.ERROR_EMPTY_ACCOUNT;
+import static com.zaubersoftware.gnip4j.api.impl.ErrorCodes.ERROR_NULL_ACTIVITY_SERVICE;
+import static com.zaubersoftware.gnip4j.api.impl.ErrorCodes.ERROR_NULL_BASE_URI_STRATEGY;
+import static com.zaubersoftware.gnip4j.api.impl.ErrorCodes.ERROR_NULL_HTTPCLIENT;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
+import static org.mockito.Mockito.mock;
 
 import com.zaubersoftware.gnip4j.api.RemoteResourceProvider;
 import com.zaubersoftware.gnip4j.api.UriStrategy;
 import com.zaubersoftware.gnip4j.api.impl.DefaultGnipFacade;
 import com.zaubersoftware.gnip4j.api.impl.DefaultGnipStream;
 import com.zaubersoftware.gnip4j.api.impl.DefaultUriStrategy;
+
+import org.junit.Test;
+
+import java.util.concurrent.ExecutorService;
 
 
 /**
@@ -56,7 +60,7 @@ public class ValidationTest {
     @Test
     public final void streamNullClient() {
         try {
-            new DefaultGnipStream(null, "account", "stream", UriStrategy.DEFAULT_STREAM_TYPE, mock(ExecutorService.class), uriStrategy);
+            new DefaultGnipStream(null, "account", "stream", mock(ExecutorService.class), uriStrategy);
             fail();
         } catch(final IllegalArgumentException e) {
             assertEquals(ERROR_NULL_HTTPCLIENT, e.getMessage());
@@ -69,7 +73,7 @@ public class ValidationTest {
     public final void streamEmptyDomain() {
         try {
             new DefaultGnipStream(mock(RemoteResourceProvider.class),
-                    " \t", "stream", UriStrategy.DEFAULT_STREAM_TYPE, mock(ExecutorService.class), uriStrategy);
+                    " \t", "stream", mock(ExecutorService.class), uriStrategy);
             fail();
         } catch(final IllegalArgumentException e) {
             assertEquals(ERROR_EMPTY_ACCOUNT, e.getMessage());
@@ -81,7 +85,7 @@ public class ValidationTest {
     public final void streamNullExecutorService() {
         try {
             new DefaultGnipStream(mock(RemoteResourceProvider.class),
-                    "xxx \t", "stream", UriStrategy.DEFAULT_STREAM_TYPE, null, uriStrategy);
+                    "xxx \t", "stream", null, uriStrategy);
             fail();
         } catch(final IllegalArgumentException e) {
             assertEquals(ERROR_NULL_ACTIVITY_SERVICE, e.getMessage());
@@ -93,7 +97,7 @@ public class ValidationTest {
     public final void streamNullUriStrategy() {
         try {
             new DefaultGnipStream(mock(RemoteResourceProvider.class),
-                    "xxx \t", "stream", UriStrategy.DEFAULT_STREAM_TYPE, mock(ExecutorService.class), null);
+                    "xxx \t", "stream", mock(ExecutorService.class), null);
             fail();
         } catch(final IllegalArgumentException e) {
             assertEquals(ERROR_NULL_BASE_URI_STRATEGY, e.getMessage());

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2012 Zauber S.A. <http://www.zaubersoftware.com/>
+ * Copyright (c) 2011-2016 Zauber S.A. <http://flowics.com/>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -31,7 +31,7 @@ public class StreamNotificationAdapterTest {
     /** nothing to do! */
     @Test
     public final void testNull() {
-        final StreamNotification n = new StreamNotificationAdapter() {
+        final StreamNotification<Activity> n = new StreamNotificationAdapter<Activity>() {
             @Override
             public void notify(final Activity activity, final GnipStream stream) {
             }

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2012 Zauber S.A. <http://www.zaubersoftware.com/>
+ * Copyright (c) 2011-2016 Zauber S.A. <http://flowics.com/>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -44,19 +44,24 @@ public final class LocalhostTestDriver {
             final UriStrategy uriStrategy = new UriStrategy() {
 
                 @Override
-                public URI createStreamUri(final String streamType, final String domain, final String streamName) {
+                public URI createStreamUri(final String domain, final String streamName) {
                     return URI.create("http://localhost:8080");
                 }
 
                 @Override
-                public URI createReplayUri(final String streamType, final String domain, final String streamName) {
-                    return URI.create("http://localhost:8080");
+                public URI createRulesUri(final String domain, final String streamName) {
+                    return null;
                 }
                 
                 @Override
-                public URI createRulesUri(final String streamType, final String domain, final String streamName) {
+                public URI createRulesDeleteUri(final String domain, final String streamName) {
                     return null;
                 }
+                
+                @Override
+            	public String getHttpMethodForRulesDelete() {
+            		return UriStrategy.HTTP_DELETE;
+            	}
             };
             final JRERemoteResourceProvider resourceProvider = new JRERemoteResourceProvider(
                     new ImmutableGnipAuthentication("foo", "bar"));
@@ -64,7 +69,7 @@ public final class LocalhostTestDriver {
 
             System.out.println("-- Creating stream");
             final AtomicInteger counter = new AtomicInteger();
-            final StreamNotificationAdapter n = new StreamNotificationAdapter() {
+            final StreamNotificationAdapter<Activity> n = new StreamNotificationAdapter<Activity>() {
                 @Override
                 public void notify(final Activity activity, final GnipStream stream) {
                     final int i = counter.getAndIncrement();
@@ -75,7 +80,10 @@ public final class LocalhostTestDriver {
                     System.out.println(i + "-" + activity.getBody() + " " + activity.getGnip().getMatchingRules());
                 }
             };
-            final GnipStream stream = gnip.createStream("test-type", "test-account", "test-stream", n);
+            final GnipStream stream = gnip.createPowertrackStream(Activity.class).withAccount("test-account")
+                                                                    .withType("test-stream")
+                                                                    .withObserver(n)
+                                                                    .build();
             System.out.println("-- Awaiting for stream to terminate");
             stream.await();
             System.out.println("-- Shutting down");

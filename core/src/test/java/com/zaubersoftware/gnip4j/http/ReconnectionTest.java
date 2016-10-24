@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2012 Zauber S.A. <http://www.zaubersoftware.com/>
+ * Copyright (c) 2011-2016 Zauber S.A. <http://flowics.com/>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,25 +15,6 @@
  */
 package com.zaubersoftware.gnip4j.http;
 
-import java.io.InputStream;
-import java.net.URI;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
-import java.util.concurrent.atomic.AtomicInteger;
-
-import org.apache.commons.io.IOUtils;
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
-import org.junit.Assert;
-import org.junit.Test;
-
 import com.zaubersoftware.gnip4j.api.GnipStream;
 import com.zaubersoftware.gnip4j.api.RemoteResourceProvider;
 import com.zaubersoftware.gnip4j.api.StreamNotification;
@@ -43,7 +24,29 @@ import com.zaubersoftware.gnip4j.api.exception.GnipException;
 import com.zaubersoftware.gnip4j.api.exception.TransportGnipException;
 import com.zaubersoftware.gnip4j.api.impl.DefaultGnipStream;
 import com.zaubersoftware.gnip4j.api.impl.DefaultUriStrategy;
+import com.zaubersoftware.gnip4j.api.impl.formats.ActivityUnmarshaller;
+import com.zaubersoftware.gnip4j.api.impl.formats.JsonActivityFeedProcessor;
 import com.zaubersoftware.gnip4j.api.model.Activity;
+
+import org.apache.commons.io.IOUtils;
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
+import org.junit.Assert;
+import org.junit.Test;
+
+import java.io.InputStream;
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
+import java.util.concurrent.atomic.AtomicInteger;
 
 /**
  * Re connection algorithm test
@@ -63,9 +66,9 @@ public final class ReconnectionTest {
         root.setLevel(Level.OFF);
 
         final AtomicInteger count = new AtomicInteger(0);
-        final DefaultGnipStream stream = new DefaultGnipStream(new MockRemoteResourceProvider(), "account", "stream", UriStrategy.DEFAULT_STREAM_TYPE, new MockExecutorService(), uriStrategy);
+        final DefaultGnipStream stream = new DefaultGnipStream(new MockRemoteResourceProvider(), "account", "stream", new MockExecutorService(), uriStrategy);
         final StringBuilder out = new StringBuilder();
-        final StreamNotification n = new StreamNotification() {
+        final StreamNotification<Activity> n = new StreamNotification<Activity>() {
             @Override
             public void notifyReConnectionError(final GnipException e) {
                 out.append(String.format("ReConnectionError: %s\n",
@@ -93,8 +96,17 @@ public final class ReconnectionTest {
                     stream.close();
                 }
             }
+
+			@Override
+			public void notifyReConnected(final int attempt, final long elaspedDisconnectedTime) {
+				out.append(String.format(
+                        "Connection attempt %d succeeded\n", attempt));
+
+			}
         };
-        stream.open(n);
+        final JsonActivityFeedProcessor processor = new JsonActivityFeedProcessor("stream", Executors.newSingleThreadExecutor(), n);
+        processor.setStream(stream);
+        stream.open(n, new ActivityUnmarshaller("stream"), processor);
         stream.await();
         final String s = out.toString();
         final String expected = IOUtils.toString(getClass().getClassLoader()
@@ -149,10 +161,10 @@ class MockRemoteResourceProvider implements RemoteResourceProvider {
     }
 
 	@Override
-	public void deleteResource(URI uri, Object resource)
+	public void deleteResource(final URI uri, final Object resource)
 			throws AuthenticationGnipException, TransportGnipException {
 		// TODO Auto-generated method stub
-		
+
 	}
 }
 

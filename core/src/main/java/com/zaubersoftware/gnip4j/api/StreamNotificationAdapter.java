@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2012 Zauber S.A. <http://www.zaubersoftware.com/>
+ * Copyright (c) 2011-2016 Zauber S.A. <http://flowics.com/>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,17 +17,16 @@ package com.zaubersoftware.gnip4j.api;
 
 import com.zaubersoftware.gnip4j.api.exception.GnipException;
 import com.zaubersoftware.gnip4j.api.exception.TransportGnipException;
-import com.zaubersoftware.gnip4j.api.model.Activity;
 
 /**
  * An adapter for {@link StreamNotification} that implements all the method
- * except for {@link StreamNotification#notify(Activity, GnipStream)} by doing 
+ * except for {@link StreamNotification#notify(Object, GnipStream)} by doing 
  * nothing.
  * 
  * @author Guido Marucci Blas
  * @since May 9, 2011
  */
-public abstract class StreamNotificationAdapter implements StreamNotification {
+public abstract class StreamNotificationAdapter<T> implements StreamNotification<T> {
 
     @Override
     public void notifyConnectionError(final TransportGnipException e) {
@@ -42,6 +41,11 @@ public abstract class StreamNotificationAdapter implements StreamNotification {
     @Override
     public void notifyReConnectionAttempt(final int attempt, final long waitTime) {
         // Do nothing
+    }
+    
+    @Override
+    public void notifyReConnected(final int attempts, final long elapsedDisconnectedTime){
+    	// Do nothing
     }
 
 }

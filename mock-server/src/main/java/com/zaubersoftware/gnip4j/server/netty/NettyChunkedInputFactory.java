@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2012 Zauber S.A. <http://www.zaubersoftware.com/>
+ * Copyright (c) 2011-2016 Zauber S.A. <http://flowics.com/>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -62,11 +62,11 @@ public class NettyChunkedInputFactory implements GnipChunkedInputFactory{
 
     protected static final Collection<String> parseActivities(final InputStream activities) {
         try {
-            final BufferedReader reader = new BufferedReader(new InputStreamReader(activities));
+            final BufferedReader reader = new BufferedReader(new InputStreamReader(activities, "UTF-8"));
             final Collection<String> result = new ArrayList<String>();
             String line;
             while ((line = reader.readLine()) != null) {
-                result.add(line);
+                result.add(line.trim() + "\r\n");
             }
             return result;
         } catch (final IOException e) {

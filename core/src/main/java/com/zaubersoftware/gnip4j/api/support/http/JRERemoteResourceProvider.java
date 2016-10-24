@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2012 Zauber S.A. <http://www.zaubersoftware.com/>
+ * Copyright (c) 2011-2016 Zauber S.A. <http://flowics.com/>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,7 @@
  */
 package com.zaubersoftware.gnip4j.api.support.http;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -24,7 +25,6 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URLConnection;
-import java.util.zip.GZIPInputStream;
 import java.util.zip.Inflater;
 import java.util.zip.InflaterInputStream;
 
@@ -36,6 +36,9 @@ import com.zaubersoftware.gnip4j.api.exception.TransportGnipException;
 import com.zaubersoftware.gnip4j.api.impl.ErrorCodes;
 import com.zaubersoftware.gnip4j.api.support.base64.Base64PasswordEncoderFactory;
 import com.zaubersoftware.gnip4j.api.support.base64.spi.Base64PasswordEncoder;
+import com.zaubersoftware.gnip4j.api.support.http.Errors.Error;
+import com.zaubersoftware.gnip4j.api.support.logging.LoggerFactory;
+import com.zaubersoftware.gnip4j.api.support.logging.spi.Logger;
 
 /**
  * JRE Resource Provider
@@ -45,6 +48,7 @@ import com.zaubersoftware.gnip4j.api.support.base64.spi.Base64PasswordEncoder;
  * @since May 23, 2011
  */
 public class JRERemoteResourceProvider extends AbstractRemoteResourceProvider {
+    private static final Logger logger = LoggerFactory.getLogger(JRERemoteResourceProvider.class);
     private final GnipAuthentication authentication;
     private final Base64PasswordEncoder encoder = Base64PasswordEncoderFactory.getEncoder();
     private final int connectTimeout = 10000;
@@ -84,15 +88,11 @@ public class JRERemoteResourceProvider extends AbstractRemoteResourceProvider {
             uc.connect();
             
             if(huc != null) {
-                validateStatusLine(uri, huc.getResponseCode(), huc.getResponseMessage());
+                validateStatusLine(uri, huc.getResponseCode(), huc.getResponseMessage(), 
+                                   new DefaultErrorProvider(huc));
             }
-            InputStream is = uc.getInputStream(); 
-            final String encoding = uc.getContentEncoding();
-            if (encoding != null && encoding.equalsIgnoreCase("gzip")) {
-                is = new GZIPInputStream(is);
-            } else if (encoding != null && encoding.equalsIgnoreCase("deflate")) {
-                is = new InflaterInputStream(is, new Inflater(true));
-            }
+            final InputStream is = getRealInputStream(uc, uc.getInputStream()); 
+            
             return new JREReleaseInputStream(uc, is);
         } catch (final MalformedURLException e) {
             throw new TransportGnipException(e);
@@ -100,6 +100,18 @@ public class JRERemoteResourceProvider extends AbstractRemoteResourceProvider {
             throw new TransportGnipException(e);
         }
     }
+
+    /** applies content enconding transformation */
+    static InputStream getRealInputStream(final URLConnection uc, InputStream is) throws IOException {
+        final String encoding = uc.getContentEncoding();
+        if (encoding != null && encoding.equalsIgnoreCase("gzip")) {
+            is = new StreamingGZIPInputStream(is);
+        } else if (encoding != null && encoding.equalsIgnoreCase("deflate")) {
+            is = new InflaterInputStream(is, new Inflater(true));
+        }
+        return is;
+    }
+    private final ObjectMapper mapper = new ObjectMapper();
     
     @Override
     public final void postResource(final URI uri, final Object resource) throws AuthenticationGnipException,
@@ -125,10 +137,11 @@ public class JRERemoteResourceProvider extends AbstractRemoteResourceProvider {
             doConfiguration(uc);
             
             outStream = uc.getOutputStream();
-            outStream.write(new ObjectMapper().writeValueAsString(resource).getBytes());
+            outStream.write(mapper.writeValueAsString(resource).getBytes("UTF-8"));
             
             if (huc != null) {
-                validateStatusLine(uri, huc.getResponseCode(), huc.getResponseMessage());
+                validateStatusLine(uri, huc.getResponseCode(), huc.getResponseMessage(),
+                        new DefaultErrorProvider(huc));
             }
             
         } catch (final MalformedURLException e) {
@@ -171,10 +184,10 @@ public class JRERemoteResourceProvider extends AbstractRemoteResourceProvider {
             doConfiguration(uc);
             
             outStream = uc.getOutputStream();
-            outStream.write(new ObjectMapper().writeValueAsString(resource).getBytes());
+            outStream.write(new ObjectMapper().writeValueAsString(resource).getBytes("UTF-8"));
             
             if (huc != null) {
-                validateStatusLine(uri, huc.getResponseCode(), huc.getResponseMessage());
+                validateStatusLine(uri, huc.getResponseCode(), huc.getResponseMessage(), new DefaultErrorProvider(huc));
             }
             
         } catch (final MalformedURLException e) {
@@ -195,5 +208,53 @@ public class JRERemoteResourceProvider extends AbstractRemoteResourceProvider {
     /** template method for configuring the URLConnection */
     protected void doConfiguration(final URLConnection uc) {
         
+    }
+    
+    static final String toInputStream(final InputStream is) {
+        if(is == null){
+            return "";
+        }
+
+        try {
+            final ByteArrayOutputStream bos = new ByteArrayOutputStream();
+            final byte []buff = new byte[4096];
+            int i;
+            while((i = is.read(buff)) >= 0) {
+                bos.write(buff, 0, i);
+            }
+            
+            return new String(bos.toByteArray(), "utf-8");
+        } catch(final IOException e) {
+            return "";
+        }
+    }
+    static final ObjectMapper m = new ObjectMapper();
+    
+    static class DefaultErrorProvider implements ErrorProvider {
+        private final HttpURLConnection huc;
+        
+        /** Creates the DefaultErrorProvider. */
+        public DefaultErrorProvider(final HttpURLConnection huc) {
+            this.huc = huc;
+        }
+        
+        @Override
+        public Errors getError() {
+            try {
+                final InputStream is = JRERemoteResourceProvider.getRealInputStream(huc, huc.getErrorStream());
+                if(huc.getContentType() != null && huc.getContentType().startsWith("application/json")) {
+                    return m.readValue(is, Errors.class);
+                } else {
+                    final Errors errors = new Errors();
+                    final Error error = new Error();
+                    error.setMessage(toInputStream(is));
+                    
+                    return errors;
+                }
+            } catch (final IOException e) {
+                logger.warn("Exception trying to read error message ", e);
+                return null;
+            }
+        }
     }
 }

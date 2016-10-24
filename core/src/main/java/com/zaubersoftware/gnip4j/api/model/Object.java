@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2012 Zauber S.A. <http://www.zaubersoftware.com/>
+ * Copyright (c) 2011-2016 Zauber S.A. <http://flowics.com/>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,19 +25,7 @@ package com.zaubersoftware.gnip4j.api.model;
  * this class.
  * 
  */
-public final class Object extends Activity {
-    /**
-   * 
-   */
-  private static final long serialVersionUID = 897931500604987085L;
-    private String summary;
-    public String getSummary() {
-        return summary;
-    }
-
-    public void setSummary(final String value) {
-        summary = value;
-    }
-
+public class Object extends Activity {
+    private static final long serialVersionUID = 1L;
         
 }

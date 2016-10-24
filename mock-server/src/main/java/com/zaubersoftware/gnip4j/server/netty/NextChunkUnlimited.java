@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2012 Zauber S.A. <http://www.zaubersoftware.com/>
+ * Copyright (c) 2011-2016 Zauber S.A. <http://flowics.com/>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,13 +24,6 @@ import org.jboss.netty.handler.codec.http.DefaultHttpChunk;
 
 public class NextChunkUnlimited extends NextChunkStrategy{
 
-    /**
-     * 
-     * Creates the NextChunkIterator.
-     *
-     * @param channel
-     * @param iterator
-     */
     public NextChunkUnlimited(final Collection<String> activities) {
         super(activities);
     }

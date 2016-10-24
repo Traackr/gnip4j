@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2012 Zauber S.A. <http://www.zaubersoftware.com/>
+ * Copyright (c) 2011-2016 Zauber S.A. <http://flowics.com/>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,12 +15,13 @@
  */
 package com.zaubersoftware.gnip4j.api.impl;
 
-import static org.junit.Assert.assertEquals;
-import junit.framework.Assert;
+import static org.junit.Assert.*;
 
 import org.junit.Test;
 
 import com.zaubersoftware.gnip4j.api.GnipAuthentication;
+
+import junit.framework.Assert;
 
 
 /**

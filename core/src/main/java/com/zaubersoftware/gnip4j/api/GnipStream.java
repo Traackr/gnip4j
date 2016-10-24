@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2012 Zauber S.A. <http://www.zaubersoftware.com/>
+ * Copyright (c) 2011-2016 Zauber S.A. <http://flowics.com/>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,15 +15,17 @@
  */
 package com.zaubersoftware.gnip4j.api;
 
+import java.util.concurrent.TimeUnit;
+
 import com.zaubersoftware.gnip4j.api.stats.StreamStats;
 
 
 
 /**
  * <p>
- * A Stream for the Gnip. Once created with {@link GnipFacade} you más register
+ * A Stream for the Gnip. Once created with {@link GnipFacade} you must register
  * some observer that will process the data. User MUST call {@link #close()} 
- * to release all the releated resources (or when you want to handle gracefull shutdowns)
+ * to release all the related resources (or when you want to handle graceful shutdowns)
  * </p>
  * <p>
  * Implementations SHOULD handle reconnections and timeouts.
@@ -39,13 +41,25 @@ public interface GnipStream {
 
     /**
      * await for the stream to be {@link #close()} or 
-     * to be shutdown because of some catastrofic issue.
+     * to be shutdown because of some catastrophic issue.
      */
     void await() throws InterruptedException;
+    
+    /**
+     * await for the stream to be {@link #close()} or 
+     * to be shutdown because of some catastrophic issue.
+     * 
+     * @param time the maximum time to wait
+     * @param unit the time unit of the {@code time} argument
+     * @return true si fue cerrado, false si salio por timeout 
+     */
+    boolean await(long time, TimeUnit unit) throws InterruptedException;
+    
     
     /** @return an identification for this stream */
     String getStreamName();
     
     /** @return stream stats */
     StreamStats getStreamStats();
+
 }

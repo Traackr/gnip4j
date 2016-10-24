@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2012 Zauber S.A. <http://www.zaubersoftware.com/>
+ * Copyright (c) 2011-2016 Zauber S.A. <http://flowics.com/>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,7 +25,6 @@ import com.zaubersoftware.gnip4j.api.GnipFacade;
 import com.zaubersoftware.gnip4j.api.GnipStream;
 import com.zaubersoftware.gnip4j.api.RemoteResourceProvider;
 import com.zaubersoftware.gnip4j.api.StreamNotificationAdapter;
-import com.zaubersoftware.gnip4j.api.UriStrategy;
 import com.zaubersoftware.gnip4j.api.exception.AuthenticationGnipException;
 import com.zaubersoftware.gnip4j.api.exception.TransportGnipException;
 import com.zaubersoftware.gnip4j.api.impl.DefaultGnipFacade;
@@ -39,7 +38,7 @@ import com.zaubersoftware.gnip4j.api.model.Activity;
  * @since May 26, 2011
  */
 public final class JMXTest {
-    private final StreamNotificationAdapter observer = new StreamNotificationAdapter() {
+    private final StreamNotificationAdapter<Activity> observer = new StreamNotificationAdapter<Activity>() {
         @Override
         public void notify(final Activity activity, final GnipStream stream) {
             
@@ -64,16 +63,24 @@ public final class JMXTest {
             }
 
 			@Override
-			public void deleteResource(URI uri, Object resource)
+			public void deleteResource(final URI uri, final Object resource)
 					throws AuthenticationGnipException, TransportGnipException {
 				// TODO Auto-generated method stub
 				
 			}
         };
         final GnipFacade f = new DefaultGnipFacade(resources);
-        final GnipStream stream = f.createStream("acme", "stream", UriStrategy.DEFAULT_STREAM_TYPE, observer);
+        final GnipStream stream = f.createPowertrackStream(Activity.class)
+            .withAccount("acme")
+            .withType("twitter")
+            .withObserver(observer)
+            .build();
         stream.close();
-        f.createStream("acme", "stream", UriStrategy.DEFAULT_STREAM_TYPE, observer);
+        f.createPowertrackStream(Activity.class)
+            .withAccount("acme")
+            .withType("twitter")
+            .withObserver(observer)
+            .build();
         stream.close();
         
     }

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2012 Zauber S.A. <http://www.zaubersoftware.com/>
+ * Copyright (c) 2011-2016 Zauber S.A. <http://flowics.com/>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 package com.zaubersoftware.gnip4j.api.impl;
+
+import java.util.concurrent.TimeUnit;
 
 import com.zaubersoftware.gnip4j.api.GnipStream;
 import com.zaubersoftware.gnip4j.api.stats.DefaultStreamStats;
@@ -63,6 +65,12 @@ public final class GnipStreamStub implements GnipStream {
     @Override
     public StreamStats getStreamStats() {
         return stats;
+    }
+
+    @Override
+    public boolean await(final long time, final TimeUnit unit) throws InterruptedException {
+        logger.debug("Awaiting for stream termination");
+        return true;
     }
 
 }

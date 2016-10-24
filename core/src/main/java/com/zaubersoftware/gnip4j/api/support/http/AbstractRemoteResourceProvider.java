@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2012 Zauber S.A. <http://www.zaubersoftware.com/>
+ * Copyright (c) 2011-2016 Zauber S.A. <http://flowics.com/>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,7 +19,10 @@ import java.net.URI;
 
 import com.zaubersoftware.gnip4j.api.RemoteResourceProvider;
 import com.zaubersoftware.gnip4j.api.exception.AuthenticationGnipException;
+import com.zaubersoftware.gnip4j.api.exception.GnipUnprocessableEntityException;
 import com.zaubersoftware.gnip4j.api.exception.TransportGnipException;
+import com.zaubersoftware.gnip4j.api.support.logging.LoggerFactory;
+import com.zaubersoftware.gnip4j.api.support.logging.spi.Logger;
 
 /**
  * Abstract {@link RemoteResourceProvider}.
@@ -29,18 +32,48 @@ import com.zaubersoftware.gnip4j.api.exception.TransportGnipException;
  */
 public abstract class AbstractRemoteResourceProvider implements RemoteResourceProvider {
     protected static final String USER_AGENT = "Gnip4j (https://github.com/zaubersoftware/gnip4j/)";
+    private final Logger logger = LoggerFactory.getLogger(getClass());
     
     /** validate responses */
-    public final void validateStatusLine(final URI uri, final int statusCode, final String reason) {
-        System.out.println(uri);
-        if (statusCode == 200 || statusCode == 201) {
+    public final void validateStatusLine(final URI uri, final int statusCode, final String reason,
+            final ErrorProvider errorProvider) {
+        if (statusCode >= 200 && statusCode <= 299) {
             // nothing to do
-        } else if (statusCode == 401) {
-            throw new AuthenticationGnipException(reason);
         } else { 
-            throw new TransportGnipException(
-                String.format("Connection to %s: Unexpected status code: %s %s",
-                        uri, statusCode, reason));
+            String msg = null;
+            Errors errors = null;
+            if (errorProvider != null) {
+                errors = errorProvider.getError();
+                if(errors != null) {
+                    msg = errors.toHumanMessage();
+                }
+            }
+
+            if (msg == null) {
+                logger.warn("there isn't message for code {} and provider {}", statusCode, errorProvider);
+                msg = "";
+            }
+
+            if (statusCode == 401) {
+                throw new AuthenticationGnipException(reason);
+            } else if (statusCode == 422) {
+                GnipUnprocessableEntityException exception = null;
+                try {
+                    if (errors != null) {
+                        exception = new GnipUnprocessableEntityException(String.format("Connection to %s", uri), errors);
+                    } else {
+                        exception = new GnipUnprocessableEntityException(String.format("Connection to %s", uri), msg);
+                    }
+                } catch (final Exception e) {
+                    throw new TransportGnipException(
+                            String.format("Connection to %s: status code: %s %s %s", uri, statusCode, reason, msg), e);
+                }
+                throw exception;
+            } else {
+                throw new TransportGnipException(String.format("Connection to %s: Unexpected status code: %s %s %s",
+                        uri, statusCode, reason, msg));
+            }
         }
     }
 }
+

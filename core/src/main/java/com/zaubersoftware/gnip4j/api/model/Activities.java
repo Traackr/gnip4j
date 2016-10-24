@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2012 Zauber S.A. <http://www.zaubersoftware.com/>
+ * Copyright (c) 2011-2016 Zauber S.A. <http://flowics.com/>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,37 +20,22 @@ import java.util.List;
 
 import org.codehaus.jackson.annotate.JsonAutoDetect;
 
-     @JsonAutoDetect
-    public  class Activities implements Serializable  {
-        /**
-       * 
-       */
-      private static final long serialVersionUID = -7796043418440450933L;
-        List<Activity> activities;
-        /**
-         * Creates the JSONDeserializationTest.Activities.
-         *
-         */
-        public Activities() {
-        }
-        
-        
-        /**
-         * Sets the activities. 
-         *
-         * @param activities <code>List<Activity></code> with the activities.
-         */
-        public void setActivities(List<Activity> activities) {
-            this.activities = activities;
-        }
-        
-        /**
-         * Returns the activities.
-         * 
-         * @return <code>List<Activity></code> with the activities.
-         */
-        public List<Activity> getActivities() {
-            return activities;
-        }
-        
+@JsonAutoDetect
+public class Activities implements Serializable {
+    private static final long serialVersionUID = 1L;
+    private List<Activity> activities;
+
+    /** constructor */
+    public Activities() {
+        // void
     }
+
+    public final void setActivities(final List<Activity> activities) {
+        this.activities = activities;
+    }
+
+    public final List<Activity> getActivities() {
+        return activities;
+    }
+
+}

@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2011-2012 Zauber S.A. <http://www.zaubersoftware.com/>
+ * Copyright (c) 2011-2016 Zauber S.A. <http://flowics.com/>
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,6 +15,8 @@
  */
 package com.zaubersoftware.gnip4j.api.support.base64.spi;
 
+import java.util.Base64;
+
 import com.zaubersoftware.gnip4j.api.GnipAuthentication;
 
 /**
@@ -24,7 +26,7 @@ public class Base64PasswordEncoderImpl implements Base64PasswordEncoder {
 
     @Override
     public final String encode(final GnipAuthentication auth) {
-        return Base64.encodeBytes(
+        return Base64.getEncoder().encodeToString(
                 (auth.getUsername() + ":" + auth.getPassword()).getBytes());
     }
 
