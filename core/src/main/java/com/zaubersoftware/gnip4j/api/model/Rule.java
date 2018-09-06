@@ -16,29 +16,30 @@
 package com.zaubersoftware.gnip4j.api.model;
 
 import java.io.Serializable;
+import java.util.Objects;
 
 import org.codehaus.jackson.annotate.JsonAutoDetect;
+import org.codehaus.jackson.annotate.JsonCreator;
 
-
-/**
- * <p>Java class for anonymous complex type.
- *
- * <p>The following schema fragment specifies the expected content contained within this class.
- *
- */
 @JsonAutoDetect
 public final class Rule implements Serializable {
     private static final long serialVersionUID = -6252436995868989738L;
     private String value;
     private String tag;
-
+    private Long id;
+    
     public Rule() {
         // for unmarshall and compatibility
     }
-    
+   
     public Rule(final String value, final String tag) {
+        this(value, tag, null);
+    }
+    
+    public Rule(final String value, final String tag, final Long id) {
         this.value = value;
         this.tag = tag;
+        this.id  = id;
     }
     
     public String getValue() {
@@ -58,6 +59,14 @@ public final class Rule implements Serializable {
         tag = value;
     }
     
+    public Long getId() {
+        return id;
+    }
+    
+    public void setId(final Long id) {
+        this.id = id;
+    }
+    
     @Override
     public boolean equals(final java.lang.Object obj) {
         boolean ret = false;
@@ -67,7 +76,10 @@ public final class Rule implements Serializable {
         } else if(obj instanceof Rule) {
             final Rule r = ((Rule)obj);
             
-            ret = equals(value, r.value) && equals(tag, r.tag); 
+            ret = Objects.equals(value, r.value) 
+               && Objects.equals(tag,   r.tag) 
+               && Objects.equals(id,    r.id)
+               ;
         }
         return ret;
     }
@@ -77,21 +89,12 @@ public final class Rule implements Serializable {
         int ret = 17;
         
         ret = 19 * ret + ((value == null) ? 0 : value.hashCode());
-        ret = 19 * ret + ((tag == null) ? 0 : tag.hashCode());
+        ret = 19 * ret + ((tag == null)   ? 0 : tag.hashCode());
+        ret = 19 * ret + ((id == null)    ? 0 : id.hashCode());
+        
         return ret;
     }
     
-    private static boolean equals(final String s1, final String s2) {
-        boolean ret = false;
-        if(s1 == null && s2 == null) {
-            ret = true;
-        } else if(s1 == null || s2 == null) {
-            ret = false;
-        } else {
-            ret = s1.equals(s2);
-        }
-        return ret;
-    }
     
     @Override
     public String toString() {
@@ -121,7 +124,15 @@ public final class Rule implements Serializable {
             sb.append(escape(value));
             sb.append('"');
         }
-        
+        if(id != null) {
+            if(sb.length() != 0) {
+                if(sb.length() > 1) {
+                    sb.append(", ");
+                }
+            }
+            sb.append("\"id\": ");
+            sb.append(id);
+        }
         sb.append('}');
         
         return sb.toString();

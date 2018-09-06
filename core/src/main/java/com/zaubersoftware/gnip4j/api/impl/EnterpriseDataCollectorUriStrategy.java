@@ -16,6 +16,7 @@
 package com.zaubersoftware.gnip4j.api.impl;
 
 import java.net.URI;
+import java.util.Locale;
 
 import com.zaubersoftware.gnip4j.api.UriStrategy;
 
@@ -34,15 +35,18 @@ public final class EnterpriseDataCollectorUriStrategy implements UriStrategy {
     public static final String RULES_URI = "https://%s.gnip.com/data_collectors/%s/rules.json";
     
     @Override
-    public URI createStreamUri(final String account, final String streamName) {
+    public URI createStreamUri(final String account, final String streamName, final Integer backfill) {
         if (account == null || account.trim().isEmpty()) {
             throw new IllegalArgumentException("The account cannot be null or empty");
         }
         if (streamName == null || streamName.trim().isEmpty()) {
             throw new IllegalArgumentException("The streamName cannot be null or empty");
         }
+        if(backfill != null) {
+            throw new IllegalArgumentException("Backfill is not supported at EDC");
+        }
         
-        return URI.create(String.format(STREAM_URI, account.trim(), streamName.trim()));
+        return URI.create(String.format(Locale.ENGLISH, STREAM_URI, account.trim(), streamName.trim()));
     }
 
     @Override
@@ -54,14 +58,20 @@ public final class EnterpriseDataCollectorUriStrategy implements UriStrategy {
             throw new IllegalArgumentException("The streamName cannot be null or empty");
         }
         
-        return URI.create(String.format(RULES_URI, account.trim(), streamName.trim()));
+        return URI.create(String.format(Locale.ENGLISH, RULES_URI, account.trim(), streamName.trim()));
     }
     
     @Override
     public URI createRulesDeleteUri(final String account, final String streamName) {
     	return createRulesUri(account, streamName);
     }
-    
+
+    @Override
+    public URI createRulesValidationUri(final String account, final String streamName) {
+        // There currently is no rule validation end-point for managed sources.
+        return null;
+    }
+
     @Override
 	public String getHttpMethodForRulesDelete() {
 		return UriStrategy.HTTP_DELETE;

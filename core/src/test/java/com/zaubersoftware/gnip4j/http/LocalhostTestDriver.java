@@ -44,7 +44,7 @@ public final class LocalhostTestDriver {
             final UriStrategy uriStrategy = new UriStrategy() {
 
                 @Override
-                public URI createStreamUri(final String domain, final String streamName) {
+                public URI createStreamUri(final String domain, final String streamName, final Integer backfill) {
                     return URI.create("http://localhost:8080");
                 }
 
@@ -55,6 +55,11 @@ public final class LocalhostTestDriver {
                 
                 @Override
                 public URI createRulesDeleteUri(final String domain, final String streamName) {
+                    return null;
+                }
+
+                @Override
+                public URI createRulesValidationUri(final String account, final String streamName) {
                     return null;
                 }
                 

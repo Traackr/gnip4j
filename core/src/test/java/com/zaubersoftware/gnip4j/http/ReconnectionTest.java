@@ -23,7 +23,6 @@ import com.zaubersoftware.gnip4j.api.exception.AuthenticationGnipException;
 import com.zaubersoftware.gnip4j.api.exception.GnipException;
 import com.zaubersoftware.gnip4j.api.exception.TransportGnipException;
 import com.zaubersoftware.gnip4j.api.impl.DefaultGnipStream;
-import com.zaubersoftware.gnip4j.api.impl.DefaultUriStrategy;
 import com.zaubersoftware.gnip4j.api.impl.formats.ActivityUnmarshaller;
 import com.zaubersoftware.gnip4j.api.impl.formats.JsonActivityFeedProcessor;
 import com.zaubersoftware.gnip4j.api.model.Activity;
@@ -39,6 +38,7 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Locale;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.ExecutorService;
@@ -48,6 +48,8 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import com.zaubersoftware.gnip4j.api.impl.PowerTrackV2UriStrategy;
+
 /**
  * Re connection algorithm test
  *
@@ -56,7 +58,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public final class ReconnectionTest {
 
-    private final UriStrategy uriStrategy = new DefaultUriStrategy();
+    private final UriStrategy uriStrategy = new PowerTrackV2UriStrategy();
 
     /** test */
     @Test//(timeout = 10000)
@@ -71,21 +73,21 @@ public final class ReconnectionTest {
         final StreamNotification<Activity> n = new StreamNotification<Activity>() {
             @Override
             public void notifyReConnectionError(final GnipException e) {
-                out.append(String.format("ReConnectionError: %s\n",
+                out.append(String.format(Locale.ENGLISH, "ReConnectionError: %s\n",
                         e.getMessage()));
             }
 
             @Override
             public void notifyReConnectionAttempt(final int attempt,
                     final long waitTime) {
-                out.append(String.format(
+                out.append(String.format(Locale.ENGLISH,
                         "Connection attempt %d wait time %d\n", attempt,
                         waitTime));
             }
 
             @Override
             public void notifyConnectionError(final TransportGnipException e) {
-                out.append(String.format("ConnectionError: %s\n",
+                out.append(String.format(Locale.ENGLISH, "ConnectionError: %s\n",
                         e.getMessage()));
             }
 
@@ -99,7 +101,7 @@ public final class ReconnectionTest {
 
 			@Override
 			public void notifyReConnected(final int attempt, final long elaspedDisconnectedTime) {
-				out.append(String.format(
+				out.append(String.format(Locale.ENGLISH,
                         "Connection attempt %d succeeded\n", attempt));
 
 			}
@@ -121,7 +123,7 @@ public final class ReconnectionTest {
 /** mock implementation */
 class MockRemoteResourceProvider implements RemoteResourceProvider {
     private final AtomicInteger i = new AtomicInteger();
-    private final List<Object []> responses = new ArrayList<Object []>();
+    private final List<Object []> responses = new ArrayList<>();
 
     /** Creates the MockRemoteResourceProvider. */
     public MockRemoteResourceProvider() {
@@ -149,15 +151,15 @@ class MockRemoteResourceProvider implements RemoteResourceProvider {
             return (InputStream) response[2];
         } else {
             throw new TransportGnipException(
-                String.format("Connection to %s: Unexpected status code: %s %s",
+                String.format(Locale.ENGLISH, "Connection to %s: Unexpected status code: %s %s",
                         uri, statusCode, response[1].toString()));
         }
 
     }
 
     @Override
-    public void postResource(final URI uri, final Object resource) {
-
+    public <T> T postResource(final URI uri, final Object resource, final Class<T> clazz) {
+        return null;
     }
 
 	@Override

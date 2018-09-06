@@ -34,8 +34,10 @@ import com.zaubersoftware.gnip4j.api.impl.formats.JSONActivityUnmarshaller;
 import com.zaubersoftware.gnip4j.api.impl.formats.JsonActivityFeedProcessor;
 import com.zaubersoftware.gnip4j.api.impl.formats.Unmarshaller;
 import com.zaubersoftware.gnip4j.api.impl.formats.XMLActivityStreamFeedProcessor;
+import com.zaubersoftware.gnip4j.api.model.Activity;
 import com.zaubersoftware.gnip4j.api.model.Rule;
 import com.zaubersoftware.gnip4j.api.model.Rules;
+import com.zaubersoftware.gnip4j.api.model.ruleValidation.RulesValidation;
 import com.zaubersoftware.gnip4j.api.stats.StreamStats;
 import com.zaubersoftware.gnip4j.api.support.http.JRERemoteResourceProvider;
 import com.zaubersoftware.gnip4j.api.support.jmx.JMXProvider;
@@ -45,6 +47,8 @@ import org.codehaus.jackson.JsonProcessingException;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URI;
+import java.util.Locale;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
 
@@ -55,7 +59,6 @@ import java.util.concurrent.TimeUnit;
  * @since Apr 29, 2011
  */
 public class DefaultGnipFacade implements GnipFacade {
-    private static final UriStrategy DEFAULT_BASE_URI_STRATEGY = new DefaultUriStrategy();
     private static final UriStrategy POWERTRACKV2_URI_STRATEGY = new PowerTrackV2UriStrategy();
     private static final UriStrategy POWERTRACKV2_REPLAY_URI_STRATEGY = new PowerTrackV2ReplayUriStrategy();
 
@@ -73,16 +76,6 @@ public class DefaultGnipFacade implements GnipFacade {
         }
         this.facade = facade;
         this.baseUriStrategy = baseUriStrategy;
-    }
-
-    /** returns a PowerTrack V1 Facade */
-    public static DefaultGnipFacade createPowertrackV1(final GnipAuthentication authentication) {
-        return createPowertrackV1(new JRERemoteResourceProvider(authentication));
-    }
-
-    /** returns a PowerTrack V1 Facade */
-    public static DefaultGnipFacade createPowertrackV1(final RemoteResourceProvider facade) {
-        return new DefaultGnipFacade(facade, DEFAULT_BASE_URI_STRATEGY);
     }
 
     /** returns a PowerTrack V2 Facade */
@@ -105,9 +98,15 @@ public class DefaultGnipFacade implements GnipFacade {
         return createPowertrackV2Replay(new JRERemoteResourceProvider(authentication));
     }
 
+    public static DefaultGnipFacade createPowertrackV2Compliance(
+            final GnipAuthentication authentication, final int partition) {
+        return new DefaultGnipFacade(new JRERemoteResourceProvider(authentication),
+                                     new ComplianceV2UriStrategy(partition));
+    }
+
     /** Creates the HttpGnipFacade. */
     public DefaultGnipFacade(final RemoteResourceProvider facade) {
-        this(facade, DEFAULT_BASE_URI_STRATEGY);
+        this(facade, POWERTRACKV2_URI_STRATEGY);
     }
 
     @Override
@@ -115,17 +114,16 @@ public class DefaultGnipFacade implements GnipFacade {
         return new PowertrackStreamBuilder() {
             @Override
             protected GnipStream buildStream() {
-                final String streamName = String.format("powertrack-%s-%s", this.account, this.type);
+                final String streamName = String.format(Locale.ENGLISH, "powertrack-%s-%s", this.account, this.type);
 
-                final FeedProcessor processor = new ByLineFeedProcessor<>(
-                    streamName,
-                    this.executorService,
-                    this.observer,
-                    this.unmarshaller == null ? new JSONActivityUnmarshaller() : this.unmarshaller);
-                final GnipStream stream = createStream(this.account, this.type,
+                final FeedProcessor processor =  new ByLineFeedProcessor<Activity>(
+                        streamName,
+                        executorService,
+                        this.observer,
+                        unmarshaller == null ? new JSONActivityUnmarshaller() : unmarshaller);
+                final GnipStream stream = createStream(this.account, type,
                         this.observer, this.executorService,
-                    this.unmarshaller
-                    == null ? new ActivityUnmarshaller(streamName) : this.unmarshaller,
+                        unmarshaller == null ? new ActivityUnmarshaller(streamName) : unmarshaller,
                         processor);
                 processor.setStream(stream);
                 return stream;
@@ -139,9 +137,9 @@ public class DefaultGnipFacade implements GnipFacade {
             @Override
             protected GnipStream buildStream() {
                 FeedProcessor p;
-                final String streamName = String.format("edc-%s-%s", this.account, this.dataCollector);
+                final String streamName = String.format(Locale.ENGLISH, "edc-%s-%s", this.account, this.dataCollector);
 
-                if(this.activity) {
+                if(activity) {
                     p = new XMLActivityStreamFeedProcessor(this.account, this.executorService, this.observer,
                                                            new ActivityUnmarshaller(streamName));
                 } else {
@@ -175,7 +173,11 @@ public class DefaultGnipFacade implements GnipFacade {
             ret = new GnipStream() {
                 @Override
                 public String getStreamName() {
-                    return stream.getStreamName();
+                    if(baseUriStrategy instanceof ComplianceV2UriStrategy) {
+                        return stream.getStreamName() + ((ComplianceV2UriStrategy)baseUriStrategy).getPartition();
+                    } else {
+                        return stream.getStreamName();
+                    }
                 }
 
                 @Override
@@ -202,7 +204,7 @@ public class DefaultGnipFacade implements GnipFacade {
                     return stream.getStreamStats();
                 }
             };
-            JMXProvider.getProvider().registerBean(stream, stream.getStreamStats());
+            JMXProvider.getProvider().registerBean(ret, stream.getStreamStats());
         }
         return ret;
     }
@@ -233,7 +235,7 @@ public class DefaultGnipFacade implements GnipFacade {
 
     @Override
     public final void addRules(final String account, final String streamName, final Rules rules) {
-      this.facade.postResource(this.baseUriStrategy.createRulesUri(account, streamName), rules);
+        facade.postResource(baseUriStrategy.createRulesUri(account, streamName), rules, null);
     }
 
     @Override
@@ -244,15 +246,19 @@ public class DefaultGnipFacade implements GnipFacade {
     }
 
     @Override
-    public final void deleteRules(final String account, final String streamName, final Rules
-        rules) {
-    	if (this.baseUriStrategy.getHttpMethodForRulesDelete().equals(UriStrategy.HTTP_POST)){
-        this.facade
-            .postResource(this.baseUriStrategy.createRulesDeleteUri(account, streamName), rules);
+    public final void deleteRules(final String account, final String streamName, final Rules rules) {
+    	if (baseUriStrategy.getHttpMethodForRulesDelete().equals(UriStrategy.HTTP_POST)){
+    		facade.postResource(baseUriStrategy.createRulesDeleteUri(account, streamName), rules, null);
     	} else {
         this.facade
             .deleteResource(this.baseUriStrategy.createRulesDeleteUri(account, streamName), rules);
     	}
+    }
+
+    @Override
+    public RulesValidation validateRules(final String account, final String streamName, final Rules rules) {
+        final URI rulesValidationUri = baseUriStrategy.createRulesValidationUri(account, streamName);
+        return facade.postResource(rulesValidationUri, rules, RulesValidation.class);
     }
 
     public final boolean isUseJMX() {
