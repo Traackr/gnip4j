@@ -22,6 +22,7 @@ import java.net.URI;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 /**
  * Implementation of {@link UriStrategy} that creates {@link URI}s to connect
@@ -51,10 +52,12 @@ public class PowerTrackV2ReplayUriStrategy implements UriStrategy {
       = "/replay/powertrack/accounts/%s/publishers/%s/%s.json?fromDate=%s&toDate=%s";
   public static final String PATH_GNIP_REPLAY_RULES_URI
       = "/rules/powertrack-replay/accounts/%s/publishers/%s/%s.json";
+  public static final String PATH_GNIP_REPLAY_RULES_VALIDATION_URI
+      = "/rules/powertrack-replay/accounts/%s/publishers/%s/%s/validation.json";
 
   private String streamUrlBase = DEFAULT_REPLAY_STREAM_URL_BASE;
   private String ruleUrlBase = DEFAULT_REPLAY_RULE_URL_BASE;
-  private DateFormat formatter = new SimpleDateFormat("yyyyMMddHHmm");
+  private DateFormat formatter = new SimpleDateFormat("yyyyMMddHHmm", Locale.ENGLISH);
 
   private final String publisher;
   private Date from;
@@ -80,13 +83,17 @@ public class PowerTrackV2ReplayUriStrategy implements UriStrategy {
   }
 
   @Override
-  public URI createStreamUri(String account, String streamName) {
+  public URI createStreamUri(String account, String streamName, Integer backFillMinutes) {
     if (account == null || account.trim().isEmpty()) {
       throw new IllegalArgumentException("The account cannot be null or empty");
     }
     if (streamName == null || streamName.trim().isEmpty()) {
       throw new IllegalArgumentException("The streamName cannot be null or empty");
     }
+    if (backFillMinutes != null && (backFillMinutes < 1 || backFillMinutes > 5)) {
+      throw new IllegalArgumentException("If set, the backfill parameter must be assigned a value between 1 and 5 (inclusive)");
+    }
+
     if (this.from == null || this.to == null) {
       throw new IllegalStateException(
           "Both 'from' and 'to' must be specified to start a replay stream");
@@ -95,9 +102,14 @@ public class PowerTrackV2ReplayUriStrategy implements UriStrategy {
     final String fromString = this.formatter.format(this.from);
     final String toString = this.formatter.format(this.to);
 
-    return URI.create(String.format(
-        this.streamUrlBase + PATH_GNIP_REPLAY_STREAM_URI, account.trim(),
-        this.publisher.trim(), streamName.trim(), fromString, toString));
+    final StringBuilder sb = new StringBuilder(60);
+    sb.append(String.format(Locale.ENGLISH,
+        streamUrlBase + PATH_GNIP_REPLAY_STREAM_URI, account.trim(),
+        publisher, streamName.trim(), fromString, toString));
+    if (backFillMinutes != null) {
+      sb.append(String.format(Locale.ENGLISH, "?backfillMinutes=%s", backFillMinutes));
+    }
+    return URI.create(sb.toString());
   }
 
   @Override
@@ -109,6 +121,11 @@ public class PowerTrackV2ReplayUriStrategy implements UriStrategy {
   @Override
   public URI createRulesDeleteUri(String account, String streamName) {
     return URI.create(createRulesBaseUrl(account, streamName) + "?_method=delete");
+  }
+
+  @Override
+  public URI createRulesValidationUri(final String account, final String streamName) {
+    return URI.create(String.format(Locale.ENGLISH, DEFAULT_REPLAY_RULE_URL_BASE + PATH_GNIP_REPLAY_RULES_VALIDATION_URI, account.trim(), publisher, streamName.trim()));
   }
 
   @Override

@@ -17,6 +17,7 @@ package com.zaubersoftware.gnip4j.api.model;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
@@ -72,7 +73,8 @@ public class Activity implements Serializable {
     int [] displayTextRange;
     @JsonProperty(value = "long_object")
     Object longObject;
-    
+    private Collection<String> withheldInCountries;
+
     public final InReplyTo getInReplyTo() {
         return inReplyTo;
     }
@@ -230,7 +232,15 @@ public class Activity implements Serializable {
     public Object getLongObject() {
         return longObject;
     }
-    
+
+    public Collection<String> getWithheldInCountries() {
+        return withheldInCountries;
+    }
+
+    public void setWithheldInCountries(final Collection<String> withheldInCountries) {
+        this.withheldInCountries = withheldInCountries;
+    }
+
     /**
      * https://dev.twitter.com/overview/api/places representation for gnip.
      */
@@ -398,14 +408,14 @@ public class Activity implements Serializable {
     /** get the categories */
     public final List<Category> getCategoriesRules() {
         if (categories == null) {
-            categories = new ArrayList<Category>();
+            categories = new ArrayList<>();
         }
         return categories;
     }
     
     public final List<Links> getLinks() {
         if (links == null) {
-            links = new ArrayList<Links>();
+            links = new ArrayList<>();
         }
         return links;
     }

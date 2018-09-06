@@ -27,7 +27,7 @@ import com.zaubersoftware.gnip4j.api.RemoteResourceProvider;
 import com.zaubersoftware.gnip4j.api.UriStrategy;
 import com.zaubersoftware.gnip4j.api.impl.DefaultGnipFacade;
 import com.zaubersoftware.gnip4j.api.impl.DefaultGnipStream;
-import com.zaubersoftware.gnip4j.api.impl.DefaultUriStrategy;
+import com.zaubersoftware.gnip4j.api.impl.PowerTrackV2UriStrategy;
 
 import org.junit.Test;
 
@@ -43,9 +43,8 @@ import java.util.concurrent.ExecutorService;
  */
 public class ValidationTest {
 
-    private final UriStrategy uriStrategy = new DefaultUriStrategy();
+    private final UriStrategy uriStrategy = new PowerTrackV2UriStrategy();
 
-    /** test */
     @Test
     public final void facadeNullClient() {
         try {
@@ -56,7 +55,6 @@ public class ValidationTest {
         }
     }
 
-    /** test */
     @Test
     public final void streamNullClient() {
         try {
