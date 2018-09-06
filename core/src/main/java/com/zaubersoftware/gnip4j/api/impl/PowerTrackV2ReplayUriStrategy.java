@@ -5,7 +5,7 @@
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  *
- *     http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -90,9 +90,6 @@ public class PowerTrackV2ReplayUriStrategy implements UriStrategy {
     if (streamName == null || streamName.trim().isEmpty()) {
       throw new IllegalArgumentException("The streamName cannot be null or empty");
     }
-    if (backFillMinutes != null && (backFillMinutes < 1 || backFillMinutes > 5)) {
-      throw new IllegalArgumentException("If set, the backfill parameter must be assigned a value between 1 and 5 (inclusive)");
-    }
 
     if (this.from == null || this.to == null) {
       throw new IllegalStateException(
@@ -102,14 +99,9 @@ public class PowerTrackV2ReplayUriStrategy implements UriStrategy {
     final String fromString = this.formatter.format(this.from);
     final String toString = this.formatter.format(this.to);
 
-    final StringBuilder sb = new StringBuilder(60);
-    sb.append(String.format(Locale.ENGLISH,
+    return URI.create(String.format(Locale.ENGLISH,
         streamUrlBase + PATH_GNIP_REPLAY_STREAM_URI, account.trim(),
         publisher, streamName.trim(), fromString, toString));
-    if (backFillMinutes != null) {
-      sb.append(String.format(Locale.ENGLISH, "?backfillMinutes=%s", backFillMinutes));
-    }
-    return URI.create(sb.toString());
   }
 
   @Override
@@ -125,7 +117,9 @@ public class PowerTrackV2ReplayUriStrategy implements UriStrategy {
 
   @Override
   public URI createRulesValidationUri(final String account, final String streamName) {
-    return URI.create(String.format(Locale.ENGLISH, DEFAULT_REPLAY_RULE_URL_BASE + PATH_GNIP_REPLAY_RULES_VALIDATION_URI, account.trim(), publisher, streamName.trim()));
+    return URI.create(String.format(Locale.ENGLISH,
+        DEFAULT_REPLAY_RULE_URL_BASE + PATH_GNIP_REPLAY_RULES_VALIDATION_URI, account.trim(),
+        publisher, streamName.trim()));
   }
 
   @Override
