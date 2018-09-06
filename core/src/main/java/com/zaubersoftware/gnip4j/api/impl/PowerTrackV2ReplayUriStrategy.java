@@ -141,7 +141,7 @@ public class PowerTrackV2ReplayUriStrategy implements UriStrategy {
       throw new IllegalArgumentException("The streamName cannot be null or empty");
     }
 
-    return String.format(
+    return String.format(Locale.ENGLISH,
         this.ruleUrlBase + PATH_GNIP_REPLAY_RULES_URI, account.trim(), this.publisher.trim(),
         streamName.trim());
   }
