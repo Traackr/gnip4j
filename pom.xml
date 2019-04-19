@@ -284,27 +284,15 @@
     <url>https://github.com/zaubersoftware/gnip4j/issues</url>
   </issueManagement>
   <distributionManagement>
-    <!-- <repository> -->
-    <!--   <id>sonatype-nexus-staging</id> -->
-    <!--   <name>Nexus Release Repository</name> -->
-    <!--   <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url> -->
-    <!-- </repository> -->
-    <!-- <snapshotRepository> -->
-    <!--   <id>zauber-code-snapshots</id> -->
-    <!--   <name>Zauber Code Snapshots</name> -->
-    <!--   <url>https://repo1.flowics.com/content/repositories/zauber-code-snapshots</url> -->
-    <!-- </snapshotRepository> -->
     <repository>
-      <uniqueVersion>false</uniqueVersion>
-      <id>nexus-private</id>
-      <url>http://repository.traackr.com/nexus/content/repositories/traackr-private/</url>
-      <layout>default</layout>
+      <id>central</id>
+      <name>traackr-maven-private-releases</name>
+      <url>https://artifactory.traackr.com/artifactory/traackr-maven-private-releases</url>
     </repository>
     <snapshotRepository>
-      <uniqueVersion>true</uniqueVersion>
-      <id>nexus-private-snapshots</id>
-      <url>http://repository.traackr.com/nexus/content/repositories/traackr-private-snapshots/</url>
-      <layout>default</layout>
+      <id>snapshots</id>
+      <name>traackr-maven-private-snapshots</name>
+      <url>https://artifactory.traackr.com/artifactory/traackr-maven-private-snapshots</url>
     </snapshotRepository>
   </distributionManagement>
 </project>
